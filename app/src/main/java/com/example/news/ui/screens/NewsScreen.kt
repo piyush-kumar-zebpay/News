@@ -38,7 +38,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
     val carouselArticles = articles.take(5)
     val countryName = CountryCodes().getCountryName(code)
 
-    // Load news when country changes
+
     LaunchedEffect(code) {
         viewModel.fetchNews(code.toString(), API_KEY)
     }
@@ -82,7 +82,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     flingBehavior = ScrollableDefaults.flingBehavior()
                 ) {
-                    // Country info row
+
                     item {
                         Box(
                             modifier = Modifier
@@ -119,7 +119,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
                     if (articles.isEmpty()) {
-                        // Empty state message
+
                         item {
                             Box(
                                 modifier = Modifier
@@ -152,7 +152,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                             Text(
                                 text = "Headlines",
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
 
