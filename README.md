@@ -15,6 +15,13 @@ Easily browse, refresh, and explore news from different countries and categories
 - 🪶 **Lightweight & Fast** — Smooth scrolling and minimal load times.
 
 ---
+## 📥 Download
+
+You can download the latest **News App** APK from the link below:
+
+[📦 Download APK](https://github.com/yourusername/news-app/releases/latest/download/NewsApp.apk)
+
+---
 
 ## 🛠 Tech Stack
 
