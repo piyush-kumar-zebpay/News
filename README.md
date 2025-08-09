@@ -19,7 +19,7 @@ Easily browse, refresh, and explore news from different countries and categories
 
 You can download the latest **News App** APK from the link below:
 
-[📦 Download APK](https://github.com/yourusername/news-app/releases/latest/download/NewsApp.apk)
+[📦 Download APK](https://github.com/kumarpiyushv0/News/releases/download/v.1.0.0/news.apk)
 
 ---
 
