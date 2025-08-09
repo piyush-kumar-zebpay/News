@@ -48,13 +48,3 @@ You can download the latest **News App** APK from the link below:
 
 ---
 
-
-## 🚀 Getting Started
-
-### 1️⃣ Prerequisites
-- Android Studio Giraffe or newer
-- Minimum SDK 24
-- News API Key ([Sign up here](https://newsapi.org/))
-
----
-
