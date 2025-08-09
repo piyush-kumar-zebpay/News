@@ -33,7 +33,7 @@ Easily browse, refresh, and explore news from different countries and categories
 
 | Home Screen | Article View | Country Selection |
 |-------------|--------------|-------------------|
-| <img src="https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9" alt="Home Screen" width="250"/> | <img src="https://github.com/user-attachments/assets/bb9cd5c4-2b89-41ec-95b2-84016e4c9e80" alt="Article View" width="250"/> | <img src="https://github.com/user-attachments/assets/da0b3756-a1e4-4a50-afbd-26b9af8f0937" alt="Country Selection" width="250"/> |
+| <img src="https://github.com/user-attachments/assets/da0b3756-a1e4-4a50-afbd-26b9af8f0937" alt="Country Selection" width="250"/> | <img src="https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9" alt="Home Screen" width="250"/> | <img src="https://github.com/user-attachments/assets/bb9cd5c4-2b89-41ec-95b2-84016e4c9e80" alt="Article View" width="250"/> |
 
 ---
 
