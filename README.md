@@ -33,10 +33,12 @@ Easily browse, refresh, and explore news from different countries and categories
 
 | Home Screen |
 |-------------|
-| <img src="https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9" alt="Home Screen" width="300"/> |
+| <img src="https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9" alt="Home Screen" width="300"/> | <img src="https://github.com/user-attachments/assets/32680952-49fd-4b58-878f-861673df88e8" alt="Home Screen" width="300"/>| <img src="https://github.com/user-attachments/assets/32680952-49fd-4b58-878f-861673df88e8" alt="Home Screen" width="300"/>
+
 
 
 ---
+
 
 ## 🚀 Getting Started
 
