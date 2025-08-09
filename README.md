@@ -21,6 +21,10 @@ You can download the latest **News App** APK from the link below:
 
 [📦 Download APK](https://github.com/kumarpiyushv0/News/releases/download/v.1.0.0/news.apk)
 
+
+⚠ **Caution:**  
+- Since this is an APK file downloaded outside the Play Store, your device may block it initially.  
+- You must **manually enable** the setting **Allow installation from unknown sources** (usually found in **Settings → Security** or **Settings → Apps → Your Browser → Install unknown apps**).
 ---
 
 ## 🛠 Tech Stack
