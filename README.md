@@ -33,7 +33,7 @@ Easily browse, refresh, and explore news from different countries and categories
 
 | Home Screen |
 |-------------|
-| ![WhatsApp Image 2025-08-09 at 10 56 46_90cb5311](https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9) |
+| <img src="https://github.com/user-attachments/assets/6b854c43-1de1-46ed-aa01-9f5fc8403be9" alt="Home Screen" width="300"/> |
 
 
 ---
