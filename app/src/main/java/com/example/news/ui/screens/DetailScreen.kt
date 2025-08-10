@@ -33,12 +33,14 @@ fun DetailScreen(article: Article, navController: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
+            .statusBarsPadding()
     ) {
         AssistChip(
             onClick = { /* Optional: handle click */ },
             label = {
                 Text(
                     text = article.source.name,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -58,11 +60,13 @@ fun DetailScreen(article: Article, navController: NavController) {
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = article.title,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = article.description ?: "No Description Available",
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyLarge
         )
     }

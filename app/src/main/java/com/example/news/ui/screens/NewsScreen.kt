@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.news.R
@@ -35,7 +36,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
     val isLoading = viewModel.isLoading
     val errorMessage = viewModel.errorMessage
     val code by viewModel.countryCode.collectAsState()
-    val carouselArticles = articles.take(5)
+    val carouselArticles = articles.mapIndexed { index, article -> index to article }.take(5)
     val countryName = CountryCodes().getCountryName(code)
 
 
@@ -86,32 +87,37 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     item {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth().padding(top = 16.dp)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .padding(vertical = 12.dp, horizontal = 16.dp)
+                                .statusBarsPadding()
                         ) {
-                            Text(
-                                text = "Your Country: $countryName",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth().height(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
 
-                            Button(
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .width(60.dp)
-                                    .height(25.dp),
-                                onClick = {
-                                    navController.navigate("intro") {
-                                        popUpTo("news") { inclusive = true }
-                                    }
-                                }
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.region),
-                                    contentDescription = "Change region"
+                                Text(
+                                    text = "Your Country: $countryName",
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.weight(1f) // Pushes the icon to the end
                                 )
+
+                                IconButton(
+                                    onClick = {
+                                        navController.navigate("intro") {
+                                            popUpTo("news") { inclusive = true }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.region_change),
+                                        contentDescription = "Change region",
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
                             }
                         }
                     }
@@ -151,22 +157,22 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                         item {
                             Text(
                                 text = "Headlines",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
+                                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp, fontWeight = FontWeight.ExtraBold),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
-
-                        item { Carousel(carouselArticles) }
+                        item { Carousel(carouselArticles, navController) }
 
                         item { Spacer(modifier = Modifier.height(16.dp)) }
 
+
                         // News list
                         itemsIndexed(
-                            items = articles,
+                            items = articles.drop(5),
                             key = { _, article -> article.url }
                         ) { index, article ->
                             NewsCard(article = article) {
-                                navController.navigate("detail/$index")
+                                navController.navigate("detail/${index+5}")
                             }
                         }
                     }

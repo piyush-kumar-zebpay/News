@@ -19,7 +19,7 @@ import com.example.news.data.CountryCodes
 @Composable
 fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
     val countryMap = CountryCodes().countryCodeToName
-    var selectedCountry by remember { mutableStateOf("IN") } // store the code, not name
+    var selectedCountry by remember { mutableStateOf("in") } // store the code, not name
     val countryList = countryMap.entries.toList() // list of (code, name)
     var expanded by remember { mutableStateOf(false) }
 
@@ -70,7 +70,7 @@ fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
                         .align(Alignment.CenterStart)
                 ) {
                     Text(
-                        text = countryMap[selectedCountry] ?: "Unknown", // show name in button
+                        text = countryMap[selectedCountry] ?: "India", // show name in button
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center
