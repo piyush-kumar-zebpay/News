@@ -1,18 +1,14 @@
 # 📰 News App
 
-A modern, sleek news application built with **Jetpack Compose** and **MVVM architecture**, fetching the latest headlines and articles from a public news API.  
-Easily browse, refresh, and explore news from different countries and categories.
+A modern, sleek news application built with **Jetpack Compose** and **MVVM architecture**, fetching the latest headlines and articles from a public news API.
 
 ---
 
 ## ✨ Features
 
 - 🌍 **Country-based news** — Select your country to get relevant headlines.
-- 🗂 **Category filter** — Browse news by categories like Technology, Sports, Health, etc.
-- 🔄 **Pull-to-refresh** — Quickly refresh articles with a swipe.
-- 📱 **Responsive UI** — Optimized for different screen sizes.
-- 📰 **Detailed article view** — Tap to view the full article in a web view.
-- 🪶 **Lightweight & Fast** — Smooth scrolling and minimal load times.
+- 📰 **Detailed article view** — Tap to view the full article.
+- 🪶 **Lightweight & Fast** — Smooth scrolling and minimal UI.
 
 ---
 ## 📥 Download
@@ -33,10 +29,8 @@ You can download the latest **News App** APK from the link below:
 - **Jetpack Compose**
 - **MVVM Architecture**
 - **Retrofit** (API calls)
-- **Material 3 UI**
 - **Coil** (Image loading)
 - **Datastore** (Persistent settings)
-- **Navigation Component** (Screen navigation)
 
 ---
 
