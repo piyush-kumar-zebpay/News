@@ -1,7 +1,5 @@
 package com.example.news.ui.screens
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,13 +16,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.news.model.Article
 import kotlinx.coroutines.delay
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 
 @Composable
@@ -33,7 +29,6 @@ fun Carousel(
     navController: NavController
 ) {
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { carouselArticles.size })
-    val context = LocalContext.current
 
     LaunchedEffect(carouselArticles.size) {
         if (carouselArticles.size <= 1) return@LaunchedEffect

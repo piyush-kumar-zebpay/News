@@ -17,13 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.news.model.Article
-import com.example.news.viewmodel.NewsViewModel
-
-data class NewsItem(
-    val imageUrl: String,
-    val headline: String,
-    val description: String
-)
 
 @Composable
 fun DetailScreen(article: Article, navController: NavController) {
@@ -36,7 +29,7 @@ fun DetailScreen(article: Article, navController: NavController) {
             .statusBarsPadding()
     ) {
         AssistChip(
-            onClick = { /* Optional: handle click */ },
+            onClick = {},
             label = {
                 Text(
                     text = article.source.name,
