@@ -19,8 +19,8 @@ import com.example.news.data.CountryCodes
 @Composable
 fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
     val countryMap = CountryCodes().countryCodeToName
-    var selectedCountry by remember { mutableStateOf("in") } // store the code, not name
-    val countryList = countryMap.entries.toList() // list of (code, name)
+    var selectedCountry by remember { mutableStateOf("in") }
+    val countryList = countryMap.entries.toList()
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
@@ -70,7 +70,7 @@ fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
                         .align(Alignment.CenterStart)
                 ) {
                     Text(
-                        text = countryMap[selectedCountry] ?: "India", // show name in button
+                        text = countryMap[selectedCountry] ?: "India",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center
@@ -93,7 +93,7 @@ fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
                                 )
                             },
                             onClick = {
-                                selectedCountry = code // store code
+                                selectedCountry = code
                                 expanded = false
                             }
                         )
@@ -105,7 +105,7 @@ fun IntroScreen(navController: NavController, viewModel: NewsViewModel) {
 
             Button(
                 onClick = {
-                    viewModel.saveCountryCode(selectedCountry) // now stores code like "US"
+                    viewModel.saveCountryCode(selectedCountry)
                     navController.navigate("news") {
                         popUpTo("intro") { inclusive = true }
                     }

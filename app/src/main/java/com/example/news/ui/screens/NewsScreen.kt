@@ -87,37 +87,36 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     item {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth().padding(top = 16.dp)
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.primaryContainer)
+                                .clickable {
+                                    navController.navigate("intro") {
+                                        popUpTo("news") { inclusive = true }
+                                    }
+                                }
                                 .padding(vertical = 12.dp, horizontal = 16.dp)
-                                .statusBarsPadding()
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth().height(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    .heightIn(min = 48.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = "Your Country: $countryName",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier.weight(1f) // Pushes the icon to the end
+                                    modifier = Modifier.weight(1f)
                                 )
 
-                                IconButton(
-                                    onClick = {
-                                        navController.navigate("intro") {
-                                            popUpTo("news") { inclusive = true }
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.region_change),
-                                        contentDescription = "Change region",
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
+                                Icon(
+                                    painter = painterResource(R.drawable.region_change),
+                                    contentDescription = "Change region",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
                             }
                         }
                     }

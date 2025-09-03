@@ -1,6 +1,5 @@
 package com.example.news.model
 
-
 data class Article(
     val source: Source,
     val author: String?,

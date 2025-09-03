@@ -9,7 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.news.model.Article
 import com.example.news.repository.Datastore
 import com.example.news.repository.RetrofitInstance
+import com.example.news.utils.Constants.Companion.API_KEY
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -34,6 +36,16 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         SharingStarted.Lazily,
         "in"
     )
+    init {
+        // Whenever countryCode changes → fetch news
+        viewModelScope.launch {
+            countryCode.collectLatest { code ->
+                if (!code.isNullOrBlank()) {
+                    fetchNews(code, API_KEY)
+                }
+            }
+        }
+    }
 
     fun saveCountryCode(code: String) {
         viewModelScope.launch {
@@ -59,7 +71,4 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
             isLoading = false
         }
     }
-
-
-
 }
