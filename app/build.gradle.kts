@@ -67,4 +67,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("com.google.android.gms:play-services-location:+")
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }

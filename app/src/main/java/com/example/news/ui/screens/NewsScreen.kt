@@ -19,14 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.news.R
-import com.example.news.data.CountryCodes
+//import com.example.news.data.CountryCodes
 import com.example.news.model.Article
 import com.example.news.utils.Constants.Companion.API_KEY
 import com.example.news.viewmodel.NewsViewModel
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,18 +35,18 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
     val articles = viewModel.articles
     val isLoading = viewModel.isLoading
     val errorMessage = viewModel.errorMessage
-    val code by viewModel.countryCode.collectAsState()
+    val code = "us"
     val carouselArticles = articles.mapIndexed { index, article -> index to article }.take(5)
-    val countryName = CountryCodes().getCountryName(code)
+//    val countryName = CountryCodes().getCountryName(code)
 
 
     LaunchedEffect(code) {
-        viewModel.fetchNews(code.toString(), API_KEY)
+        viewModel.fetchNews(code, API_KEY)
     }
 
     PullToRefreshBox(
         isRefreshing = isLoading,
-        onRefresh = { viewModel.fetchNews(code.toString(), API_KEY) },
+        onRefresh = { viewModel.fetchNews(code, API_KEY) },
         modifier = Modifier.fillMaxSize()
     ) {
         when {
@@ -84,42 +84,42 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     flingBehavior = ScrollableDefaults.flingBehavior()
                 ) {
 
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.primaryContainer)
-                                .clickable {
-                                    navController.navigate("intro") {
-                                        popUpTo("news") { inclusive = true }
-                                    }
-                                }
-                                .padding(vertical = 12.dp, horizontal = 16.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                                    .heightIn(min = 48.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Your Country: $countryName",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier.weight(1f)
-                                )
-
-                                Icon(
-                                    painter = painterResource(R.drawable.region_change),
-                                    contentDescription = "Change region",
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
-                        }
-                    }
+//                    item {
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(top = 16.dp)
+//                                .clip(RoundedCornerShape(12.dp))
+//                                .background(MaterialTheme.colorScheme.primaryContainer)
+//                                .clickable {
+//                                    navController.navigate("intro") {
+//                                        popUpTo("news") { inclusive = true }
+//                                    }
+//                                }
+//                                .padding(vertical = 12.dp, horizontal = 16.dp)
+//                        ) {
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+//                                    .heightIn(min = 48.dp),
+//                                verticalAlignment = Alignment.CenterVertically
+//                            ) {
+//                                Text(
+//                                    text = "Your Country: $countryName",
+//                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+//                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                                    modifier = Modifier.weight(1f)
+//                                )
+//
+//                                Icon(
+//                                    painter = painterResource(R.drawable.region_change),
+//                                    contentDescription = "Change region",
+//                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                                )
+//                            }
+//                        }
+//                    }
 
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
@@ -153,13 +153,13 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                         }
                     } else {
                         // Headlines section
-                        item {
-                            Text(
-                                text = "Headlines",
-                                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp, fontWeight = FontWeight.ExtraBold),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+//                        item {
+//                            Text(
+//                                text = "Headlines",
+//                                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp, fontWeight = FontWeight.ExtraBold),
+//                                color = MaterialTheme.colorScheme.primary
+//                            )
+//                        }
                         item { Carousel(carouselArticles, navController) }
 
                         item { Spacer(modifier = Modifier.height(16.dp)) }
