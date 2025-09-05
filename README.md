@@ -15,7 +15,7 @@ A modern, sleek news application built with **Jetpack Compose** and **MVVM archi
 
 You can download the latest **News App** APK from the link below:
 
-[📦 Download APK](https://github.com/kumarpiyushv0/News/releases/download/v.1.0.0/news.apk)
+[📦 Download APK](https://github.com/piyush-kumar-zebpay/News/releases/download/v.1.0.0/News.MVI.apk)
 
 
 ⚠ **Caution:**  
