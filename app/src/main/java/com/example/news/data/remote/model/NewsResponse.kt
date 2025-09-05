@@ -1,5 +1,4 @@
-package com.example.news.model
-
+package com.example.news.data.remote.model
 
 data class NewsResponse(
     val status: String,

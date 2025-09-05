@@ -22,31 +22,48 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.news.R
-//import com.example.news.data.CountryCodes
-import com.example.news.model.Article
-import com.example.news.utils.Constants.Companion.API_KEY
-import com.example.news.viewmodel.NewsViewModel
-import kotlinx.coroutines.delay
+import com.example.news.data.remote.model.Article
+import com.example.news.mvi.NewsEffect
+import com.example.news.mvi.NewsIntent
+import com.example.news.mvi.NewsState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
-    val articles = viewModel.articles
-    val isLoading = viewModel.isLoading
-    val errorMessage = viewModel.errorMessage
-    val code = "us"
-    val carouselArticles = articles.mapIndexed { index, article -> index to article }.take(5)
-//    val countryName = CountryCodes().getCountryName(code)
+fun NewsScreen(
+    stateFlow: StateFlow<NewsState>,
+    effectFlow: Flow<NewsEffect>,
+    onIntent: (NewsIntent) -> Unit,
+    navController: NavController
+) {
+    val state by stateFlow.collectAsState()
 
-
-    LaunchedEffect(code) {
-        viewModel.fetchNews(code, API_KEY)
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is NewsEffect.NavigateToDetail -> {
+                    navController.navigate("detail/${effect.index}")
+                }
+                is NewsEffect.ShowError -> {
+                }
+            }
+        }
     }
+    LaunchedEffect(Unit) {
+        onIntent(NewsIntent.LoadNews("us"))
+    }
+
+    val articles = state.articles
+    val isLoading = state.isLoading
+    val errorMessage = state.errorMessage
+    val carouselArticles = articles.mapIndexed { index, article -> index to article }.take(5)
 
     PullToRefreshBox(
         isRefreshing = isLoading,
-        onRefresh = { viewModel.fetchNews(code, API_KEY) },
+        onRefresh = { onIntent(NewsIntent.Refresh) },
         modifier = Modifier.fillMaxSize()
     ) {
         when {
@@ -60,6 +77,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     CircularProgressIndicator()
                 }
             }
+
             errorMessage != null -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -74,6 +92,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     )
                 }
             }
+
             else -> {
                 LazyColumn(
                     modifier = Modifier
@@ -83,48 +102,9 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     flingBehavior = ScrollableDefaults.flingBehavior()
                 ) {
-
-//                    item {
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(top = 16.dp)
-//                                .clip(RoundedCornerShape(12.dp))
-//                                .background(MaterialTheme.colorScheme.primaryContainer)
-//                                .clickable {
-//                                    navController.navigate("intro") {
-//                                        popUpTo("news") { inclusive = true }
-//                                    }
-//                                }
-//                                .padding(vertical = 12.dp, horizontal = 16.dp)
-//                        ) {
-//                            Row(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-//                                    .heightIn(min = 48.dp),
-//                                verticalAlignment = Alignment.CenterVertically
-//                            ) {
-//                                Text(
-//                                    text = "Your Country: $countryName",
-//                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-//                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-//                                    modifier = Modifier.weight(1f)
-//                                )
-//
-//                                Icon(
-//                                    painter = painterResource(R.drawable.region_change),
-//                                    contentDescription = "Change region",
-//                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                                )
-//                            }
-//                        }
-//                    }
-
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
                     if (articles.isEmpty()) {
-
                         item {
                             Box(
                                 modifier = Modifier
@@ -132,9 +112,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                                     .padding(top = 100.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.error),
                                         contentDescription = null,
@@ -152,26 +130,15 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
                             }
                         }
                     } else {
-                        // Headlines section
-//                        item {
-//                            Text(
-//                                text = "Headlines",
-//                                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp, fontWeight = FontWeight.ExtraBold),
-//                                color = MaterialTheme.colorScheme.primary
-//                            )
-//                        }
                         item { Carousel(carouselArticles, navController) }
-
                         item { Spacer(modifier = Modifier.height(16.dp)) }
 
-
-                        // News list
                         itemsIndexed(
                             items = articles.drop(5),
                             key = { _, article -> article.url }
                         ) { index, article ->
                             NewsCard(article = article) {
-                                navController.navigate("detail/${index+5}")
+                                onIntent(NewsIntent.SelectArticle(index + 5))
                             }
                         }
                     }
@@ -180,6 +147,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel) {
         }
     }
 }
+
 
 @Composable
 fun NewsCard(article: Article, onClick: () -> Unit) {

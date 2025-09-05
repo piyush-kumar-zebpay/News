@@ -1,6 +1,6 @@
-package com.example.news.repository
+package com.example.news.data.remote
 
-import com.example.news.model.NewsApi
+import com.example.news.data.remote.api.NewsApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
