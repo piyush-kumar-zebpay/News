@@ -66,4 +66,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
+
+    // Testing Dependencies
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
+    testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }

@@ -1,17 +1,13 @@
-package com.example.news.data.remote.model
+package com.example.news.domain.model
 
 data class Article(
-    val source: Source,
+    val sourceName: String,
+    val sourceId: String?,
     val author: String?,
     val title: String,
     val description: String?,
     val url: String,
-    val urlToImage: String?,
+    val imageUrl: String?,
     val publishedAt: String,
     val content: String?
-)
-
-data class Source(
-    val id: String?,
-    val name: String
 )
