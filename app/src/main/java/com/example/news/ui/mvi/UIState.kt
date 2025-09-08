@@ -1,4 +1,4 @@
-package com.example.news.mvi
+package com.example.news.ui.mvi
 
 import com.example.news.data.remote.model.Article
 

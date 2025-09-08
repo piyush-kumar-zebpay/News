@@ -1,4 +1,4 @@
-package com.example.news.mvi
+package com.example.news.ui.mvi
 
 sealed class NewsIntent {
     data class LoadNews(val country: String) : NewsIntent()

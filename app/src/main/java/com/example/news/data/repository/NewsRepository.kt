@@ -6,6 +6,11 @@ import retrofit2.Response
 
 class NewsRepository {
     suspend fun getTopHeadlines(country: String, apiKey: String): Response<NewsResponse> {
-        return RetrofitInstance.Companion.api.getTopHeadlines(country, apiKey)
+        try{
+            return RetrofitInstance.Companion.api.getTopHeadlines(country, apiKey)
+        }
+        catch(_: Exception){
+            throw Exception("Unable to fetch news. Please check your connection.")
+        }
     }
 }

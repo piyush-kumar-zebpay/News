@@ -1,12 +1,14 @@
-package com.example.news.mvi
+package com.example.news.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.news.data.remote.model.Article
-//import com.example.news.repository.Datastore
 import com.example.news.data.repository.NewsRepository
-import com.example.news.utils.Constants.Companion.API_KEY
+import com.example.news.ui.mvi.NewsEffect
+import com.example.news.ui.mvi.NewsIntent
+import com.example.news.ui.mvi.NewsState
+import com.example.news.utils.Constants
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +38,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                val response = newsApi.getTopHeadlines(country, API_KEY)
+                val response = newsApi.getTopHeadlines(country, Constants.Companion.API_KEY)
                 if (response.isSuccessful) {
                     val newsResponse = response.body()
                     val articles: List<Article> = newsResponse?.articles ?: emptyList()

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.news.R
-import com.example.news.mvi.NewsState
+import com.example.news.ui.mvi.NewsState
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable

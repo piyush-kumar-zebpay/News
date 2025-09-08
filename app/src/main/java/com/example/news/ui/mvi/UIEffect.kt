@@ -1,4 +1,4 @@
-package com.example.news.mvi
+package com.example.news.ui.mvi
 
 sealed class NewsEffect {
     data class ShowError(val message: String) : NewsEffect()
