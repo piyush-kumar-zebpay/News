@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
                         NewsScreen(
                             stateFlow = viewModel.state,
                             effectFlow = viewModel.effect,
-                            onIntent = { intent -> viewModel.handleIntent(intent) },
                             navController = navController
                         )
                     }
