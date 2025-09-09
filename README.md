@@ -14,7 +14,7 @@ A modern, sleek news application built with **Jetpack Compose** and **Clean code
 
 You can download the latest **News App** APK from the link below:
 
-[📦 Download APK](https://github.com/piyush-kumar-zebpay/News/releases/download/v2.5.0/News.Clean.Code.apk)
+[📦 Download APK](https://github.com/piyush-kumar-zebpay/News/releases/download/2.5.5/News.Shimmer.apk)
 
 
 ⚠ **Caution:**  
