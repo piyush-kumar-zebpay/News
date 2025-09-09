@@ -12,6 +12,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,18 +28,29 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.news.R
 import com.example.news.domain.model.Article
+import com.example.news.presentation.model.NewsUiState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Carousel(articles: List<Article>, navController: NavController) {
-    val pagerState = rememberPagerState(pageCount = { articles.size })
-    LaunchedEffect(articles.size) {
-        if (articles.size <= 1) return@LaunchedEffect
-        while (true) {
-            delay(2000L)
-            val nextPage = (pagerState.currentPage + 1) % articles.size
-            pagerState.animateScrollToPage(nextPage)
+fun Carousel(
+    articles: List<Article>,
+    stateFlow: StateFlow<NewsUiState>,
+    navController: NavController
+) {
+    val state by stateFlow.collectAsState()
+    val isLoading = state.isLoading
+
+    val pagerState = rememberPagerState(pageCount = { if (isLoading) 3 else articles.size })
+
+    LaunchedEffect(articles.size, isLoading) {
+        if (!isLoading && articles.size > 1) {
+            while (true) {
+                delay(2000L)
+                val nextPage = (pagerState.currentPage + 1) % articles.size
+                pagerState.animateScrollToPage(nextPage)
+            }
         }
     }
 
@@ -52,58 +65,89 @@ fun Carousel(articles: List<Article>, navController: NavController) {
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val article = articles[page]
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { navController.navigate("detail/$page") }
-            ) {
-                AsyncImage(
-                    model = article.imageUrl,
-                    contentDescription = article.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                    placeholder = painterResource(id = R.drawable.placeholder),
-                    error = painterResource(id = R.drawable.error)
-                )
 
-                // Gradient overlay
+            if (isLoading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.7f)
-                                ),
-                                startY = 0f,
-                                endY = Float.POSITIVE_INFINITY
-                            )
-                        )
-                )
-
-                // Text content
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp))
                 ) {
-                    Text(
-                        text = article.sourceName.uppercase(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White.copy(alpha = 0.8f)
+
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(16.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .height(20.dp)
+                                .fillMaxWidth(0.3f)
+                                .clip(RoundedCornerShape(4.dp))
+                                .shimmerEffect()
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(24.dp)
+                                .fillMaxWidth(0.7f)
+                                .clip(RoundedCornerShape(4.dp))
+                                .shimmerEffect()
+                        )
+                    }
+                }
+            } else {
+                val article = articles[page]
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("detail/$page") }
+                ) {
+                    // Banner image
+                    AsyncImage(
+                        model = article.imageUrl,
+                        contentDescription = article.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                        placeholder = painterResource(id = R.drawable.placeholder),
+                        error = painterResource(id = R.drawable.error)
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = Color.White,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.7f)
+                                    ),
+                                    startY = 0f,
+                                    endY = Float.POSITIVE_INFINITY
+                                )
+                            )
                     )
+
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = article.sourceName.uppercase(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = article.title,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Color.White,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

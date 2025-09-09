@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,12 +62,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
-    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.foundation:foundation:1.6.2")
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.core:core-splashscreen:1.0.0")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
 
     // Testing Dependencies
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
