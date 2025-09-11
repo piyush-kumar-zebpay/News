@@ -38,7 +38,7 @@ class GetTopHeadlinesUseCaseTest {
                 content = "Test Content"
             )
         )
-        coEvery { newsRepository.getTopHeadlines("us") } returns Result.Success(articles)
+        coEvery { newsRepository.getTopHeadlines("us",) } returns Result.Success(articles)
 
         // When
         val result = getTopHeadlinesUseCase("us")
@@ -52,7 +52,7 @@ class GetTopHeadlinesUseCaseTest {
     fun `when repository returns error, use case should return error`() = runBlocking {
         // Given
         val errorMessage = "Network error"
-        coEvery { newsRepository.getTopHeadlines("us") } returns Result.Error(errorMessage)
+        coEvery { newsRepository.getTopHeadlines("us",) } returns Result.Error(errorMessage)
 
         // When
         val result = getTopHeadlinesUseCase("us")
@@ -65,7 +65,7 @@ class GetTopHeadlinesUseCaseTest {
     @Test
     fun `when repository returns loading, use case should return loading`() = runBlocking {
         // Given
-        coEvery { newsRepository.getTopHeadlines("us") } returns Result.Loading
+        coEvery { newsRepository.getTopHeadlines("us",) } returns Result.Loading
 
         // When
         val result = getTopHeadlinesUseCase("us")
@@ -78,7 +78,7 @@ class GetTopHeadlinesUseCaseTest {
     fun `when repository returns empty list, use case should return success with empty list`() = runBlocking {
         // Given
         val emptyArticles = emptyList<Article>()
-        coEvery { newsRepository.getTopHeadlines("us") } returns Result.Success(emptyArticles)
+        coEvery { newsRepository.getTopHeadlines("us",) } returns Result.Success(emptyArticles)
 
         // When
         val result = getTopHeadlinesUseCase("us")
@@ -92,7 +92,7 @@ class GetTopHeadlinesUseCaseTest {
     fun `when different country code is provided, repository should be called with that country code`() = runBlocking {
         // Given
         val articles = emptyList<Article>()
-        coEvery { newsRepository.getTopHeadlines("in") } returns Result.Success(articles)
+        coEvery { newsRepository.getTopHeadlines("in",) } returns Result.Success(articles)
 
         // When
         val result = getTopHeadlinesUseCase("in")

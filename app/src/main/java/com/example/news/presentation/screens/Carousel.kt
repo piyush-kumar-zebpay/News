@@ -65,36 +65,8 @@ fun Carousel(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-
             if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp))
-                ) {
-
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(16.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .height(20.dp)
-                                .fillMaxWidth(0.3f)
-                                .clip(RoundedCornerShape(4.dp))
-                                .shimmerEffect()
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box(
-                            modifier = Modifier
-                                .height(24.dp)
-                                .fillMaxWidth(0.7f)
-                                .clip(RoundedCornerShape(4.dp))
-                                .shimmerEffect()
-                        )
-                    }
-                }
+                CaraouselShimmer()
             } else {
                 val article = articles[page]
                 Box(
@@ -102,7 +74,6 @@ fun Carousel(
                         .fillMaxSize()
                         .clickable { navController.navigate("detail/$page") }
                 ) {
-                    // Banner image
                     AsyncImage(
                         model = article.imageUrl,
                         contentDescription = article.title,

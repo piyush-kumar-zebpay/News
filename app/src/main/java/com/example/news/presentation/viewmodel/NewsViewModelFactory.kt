@@ -8,7 +8,10 @@ class NewsViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NewsViewModel(AppModule.getTopHeadlinesUseCase) as T
+            return NewsViewModel(
+                AppModule.getTopHeadlinesUseCase,
+                AppModule.getInternetStatusUseCase
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
