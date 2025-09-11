@@ -15,21 +15,20 @@ import com.example.news.presentation.viewmodel.NewsViewModelFactory
 import com.example.news.presentation.screens.DetailScreen
 import com.example.news.presentation.screens.NewsScreen
 import com.example.news.ui.theme.NewsTheme
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels { NewsViewModelFactory() }
     private val startTime = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition {
-            //intentionally delayed
-            System.currentTimeMillis() < startTime + 1500
-        }
-
         super.onCreate(savedInstanceState)
+        Timber.d("Splash startTime: $startTime")
+        installSplashScreen()
+        Timber.i("App started in ${System.currentTimeMillis() - startTime} ms")
         setContent {
             NewsTheme {
+                Timber.plant(Timber.DebugTree())
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "news") {

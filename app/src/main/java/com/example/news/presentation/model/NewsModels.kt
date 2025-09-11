@@ -5,6 +5,7 @@ import com.example.news.domain.model.Article
 data class NewsUiState(
     val articles: List<Article> = emptyList(),
     val isLoading: Boolean = false,
+    val isOnline: Boolean = true,
     val error: String? = null
 )
 
