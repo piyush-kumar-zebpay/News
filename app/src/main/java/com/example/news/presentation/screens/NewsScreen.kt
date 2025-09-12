@@ -45,6 +45,7 @@ fun NewsScreen(
                 wasOnline = false
                 SnackBar(
                     message = "No internet connection!",
+                    isAnimation = false
                 )
             }
             else if(!wasOnline) {
