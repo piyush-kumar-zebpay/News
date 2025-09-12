@@ -19,7 +19,8 @@ import kotlinx.coroutines.delay
 fun SnackBar(
     message: String,
     color: Color = Color(0xFF731515),
-    durationMillis: Long = 2000
+    durationMillis: Long = 2000,
+    isAnimation: Boolean = true
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -29,35 +30,59 @@ fun SnackBar(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = slideInVertically(
-                animationSpec = tween(
-                    durationMillis = 400,
-                    easing = androidx.compose.animation.core.EaseIn
-                )
-            ),
-            exit = slideOutVertically(
-                targetOffsetY = { -it },
-                animationSpec = tween(durationMillis = 300)
-            ),
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .height(30.dp)
-        ) {
+        if(isAnimation){
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(
+                    animationSpec = tween(
+                        durationMillis = 400,
+                        easing = androidx.compose.animation.core.EaseIn
+                    )
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { -it },
+                    animationSpec = tween(durationMillis = 300)
+                ),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+
+            ) {
+                SnackBarContent(message = message, color = color)
+            }
+        }
+        else{
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = color),
+                    .background(color),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = message,
                     color = Color.White,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(2.dp)
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }
+    }
+}
+@Composable
+fun SnackBarContent(
+    message: String,
+    color: Color
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            color = Color.White,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
     }
 }
