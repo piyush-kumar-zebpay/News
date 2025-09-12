@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
             NewsTheme {
                 Timber.plant(Timber.DebugTree())
                 val navController = rememberNavController()
-
                 NavHost(navController = navController, startDestination = "news") {
                     composable("news") {
                         NewsScreen(

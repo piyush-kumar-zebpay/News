@@ -5,15 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.presentation.model.NewsEffect
-import com.example.news.presentation.model.NewsIntent
 import com.example.news.presentation.model.NewsUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
@@ -21,71 +16,65 @@ class NewsViewModel(
     private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase,
     private val internetStatusUseCase: GetInternetStatusUseCase
 ) : ViewModel() {
+    private val _state = MutableSharedFlow<NewsUiState>(replay = 1)
+    val state: SharedFlow<NewsUiState> = _state.asSharedFlow()
 
-    private val _state = MutableStateFlow(NewsUiState())
-    val state: StateFlow<NewsUiState> = _state.asStateFlow()
-
+    // Effects flow
     private val _effect = MutableSharedFlow<NewsEffect>()
     val effect: SharedFlow<NewsEffect> = _effect.asSharedFlow()
 
-    init {
-        handleIntent(NewsIntent.LoadTopHeadlines)
-        networkStatus()
-    }
+    private var currentState = NewsUiState()
 
-    fun handleIntent(intent: NewsIntent) {
-        when (intent) {
-            is NewsIntent.LoadTopHeadlines -> loadTopHeadlines()
-            is NewsIntent.SelectArticle -> navigateToDetail(intent.index)
-        }
+    init{
+        viewModelScope.launch { _state.emit(currentState) }
+        loadTopHeadlines()
+        networkStatus()
     }
 
     private fun loadTopHeadlines() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-            //intentional delay
-//            delay(5000)
+            currentState = currentState.copy(isLoading = true)
+            _state.emit(currentState)
             try {
                 when (val result = getTopHeadlinesUseCase("us")) {
                     is com.example.news.domain.model.Result.Success -> {
-                        _state.value = _state.value.copy(
+                        currentState = currentState.copy(
                             articles = result.data,
                             isLoading = false,
                             error = null
                         )
+                        _state.emit(currentState)
                     }
                     is com.example.news.domain.model.Result.Error -> {
-                        _state.value = _state.value.copy(
+                        currentState = currentState.copy(
                             isLoading = false,
                             error = result.message
                         )
-                        _effect.emit(NewsEffect.ShowError(result.message))
+                        _state.emit(currentState)
                     }
                     is com.example.news.domain.model.Result.Loading -> {
-                        _state.value = _state.value.copy(isLoading = true)
+                        currentState = currentState.copy(isLoading = true)
+                        _state.emit(currentState)
                     }
                 }
             } catch (e: Exception) {
-                _state.value = _state.value.copy(
+                currentState = currentState.copy(
                     isLoading = false,
                     error = e.message ?: "Unknown error occurred"
                 )
-                _effect.emit(NewsEffect.ShowError(e.message ?: "Unknown error occurred"))
+                _state.emit(currentState)
             }
         }
     }
+
+
 
     private fun networkStatus() {
         viewModelScope.launch {
             internetStatusUseCase().collect { isOnline ->
-                _state.value = _state.value.copy(isOnline = isOnline)
+                currentState = currentState.copy(isOnline = isOnline)
+                _state.emit(currentState)
             }
-        }
-    }
-
-    private fun navigateToDetail(index: Int) {
-        viewModelScope.launch {
-            _effect.emit(NewsEffect.NavigateToDetail(index))
         }
     }
 }
