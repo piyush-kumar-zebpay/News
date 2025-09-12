@@ -30,16 +30,16 @@ import com.example.news.R
 import com.example.news.domain.model.Article
 import com.example.news.presentation.model.NewsUiState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(
     articles: List<Article>,
-    stateFlow: StateFlow<NewsUiState>,
+    stateFlow: SharedFlow<NewsUiState>,
     navController: NavController
 ) {
-    val state by stateFlow.collectAsState()
+    val state by stateFlow.collectAsState(initial = NewsUiState())
     val isLoading = state.isLoading
 
     val pagerState = rememberPagerState(pageCount = { if (isLoading) 3 else articles.size })

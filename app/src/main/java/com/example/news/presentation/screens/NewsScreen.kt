@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -17,15 +18,15 @@ import com.example.news.R
 import com.example.news.presentation.model.NewsEffect
 import com.example.news.presentation.model.NewsUiState
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+
 @Composable
 fun NewsScreen(
-    stateFlow: StateFlow<NewsUiState>,
+    stateFlow: SharedFlow<NewsUiState>,
     effectFlow: SharedFlow<NewsEffect>,
-    navController: NavController
+    navController: NavController,
 ) {
-    val state by stateFlow.collectAsState()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val state by stateFlow.collectAsState(initial = NewsUiState())
+    var wasOnline by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         effectFlow.collect { effect ->
@@ -33,33 +34,27 @@ fun NewsScreen(
                 is NewsEffect.NavigateToDetail -> {
                     navController.navigate("detail/${effect.index}")
                 }
-                is NewsEffect.ShowError -> {
-                    snackBarHostState.showSnackbar(
-                        message = effect.message,
-                        duration = SnackbarDuration.Short
-                    )
-                }
             }
         }
     }
 
-    LaunchedEffect(state.isOnline) {
-        if (!state.isOnline) {
-            snackBarHostState.showSnackbar(
-                message = "No internet connection",
-                duration = SnackbarDuration.Short
-            )
-        }
-        else {
-            snackBarHostState.showSnackbar(
-                message = "Internet connected",
-                duration = SnackbarDuration.Short
-            )
-        }
-    }
-
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) }
+
+        snackbarHost = {
+            if (!state.isOnline) {
+                wasOnline = false
+                SnackBar(
+                    message = "No internet connection!",
+                )
+            }
+            else if(!wasOnline) {
+                SnackBar(
+                    message = "Back online!",
+                    color = Color(0xFF1C6E1F),
+                )
+                wasOnline = false
+            }
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -71,10 +66,12 @@ fun NewsScreen(
                 state.isLoading && state.articles.isEmpty() -> {
                     ShimmerScreen(stateFlow, navController)
                 }
+
                 state.error != null && state.articles.isEmpty() -> {
-                    Box(
+                    Column(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = state.error!!,
@@ -83,8 +80,18 @@ fun NewsScreen(
                             modifier = Modifier.padding(16.dp),
                             textAlign = TextAlign.Center
                         )
+                        Button(
+                            onClick = {
+                                navController.navigate("news")
+                            },
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Text(text = "Retry")
+                        }
                     }
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier
@@ -123,7 +130,6 @@ fun NewsScreen(
                                 }
                             }
                         } else {
-                            // Top 5 articles for carousel
                             item {
                                 Carousel(
                                     articles = state.articles.take(5),

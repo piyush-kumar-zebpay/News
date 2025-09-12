@@ -20,15 +20,15 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.news.R
 import com.example.news.presentation.model.NewsUiState
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     articleIndex: Int,
-    stateFlow: StateFlow<NewsUiState>
+    stateFlow: SharedFlow<NewsUiState>
 ) {
-    val state by stateFlow.collectAsState()
+    val state by stateFlow.collectAsState(initial = NewsUiState())
     val article = state.articles.getOrNull(articleIndex)
     val context = LocalContext.current
 

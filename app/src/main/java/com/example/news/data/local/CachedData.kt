@@ -6,25 +6,34 @@ import timber.log.Timber
 open class CachedData() {
     // Show cached data when offline (last 24 hours)
     val offlineCacheInterceptor = Interceptor { chain ->
+        val request = chain.request()
+        Timber.d("OfflineCacheInterceptor - Request headers: ${request.headers}")
         try {
-            Timber.d("OfflineCacheInterceptor → proceeding normally")
-            chain.proceed(chain.request())
+            val response = chain.proceed(request)
+            Timber.d("OfflineCacheInterceptor - Response headers: ${response.headers}")
+            response
         } catch (e: Exception) {
             Timber.w(e, "Network failed → using cached data")
-            val newRequest = chain.request().newBuilder()
+            val newRequest = request.newBuilder()
                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24)
                 .build()
-            chain.proceed(newRequest)
+            Timber.d("OfflineCacheInterceptor - Cached Request headers: ${newRequest.headers}")
+            val response = chain.proceed(newRequest)
+            Timber.d("OfflineCacheInterceptor - Response headers (from cache): ${response.headers}")
+            response
         }
     }
 
-    // Force cache when online (5 minutes)
+    // Force cache when online (1 minutes)
     val onlineCacheInterceptor = Interceptor { chain ->
-        Timber.d("OnlineCacheInterceptor → forcing 5 min cache")
-        val response = chain.proceed(chain.request())
+        val request = chain.request()
+        Timber.d("OnlineCacheInterceptor - Request headers: ${request.headers}")
+        val response = chain.proceed(request)
+        Timber.d("OnlineCacheInterceptor - Response headers: ${response.headers}")
         response.newBuilder()
-            .header("Cache-Control", "public, max-age=" + 60 * 5) // cache 5 min
-            .removeHeader("Pragma") // some servers add no-cache pragma
+            .header("Cache-Control", "public, max-age=" + 60 * 1) // cache 1 min
+            .removeHeader("Pragma")
             .build()
+
     }
 }
