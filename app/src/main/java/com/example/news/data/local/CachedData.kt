@@ -17,9 +17,8 @@ open class CachedData() {
             val newRequest = request.newBuilder()
                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24)
                 .build()
-            Timber.d("OfflineCacheInterceptor - Cached Request headers: ${newRequest.headers}")
+
             val response = chain.proceed(newRequest)
-            Timber.d("OfflineCacheInterceptor - Response headers (from cache): ${response.headers}")
             response
         }
     }

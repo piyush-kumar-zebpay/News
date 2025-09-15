@@ -1,6 +1,6 @@
 package com.example.news.domain.model
 
-data class Article(
+data class BookmarkedArticle (
     val sourceName: String,
     val sourceId: String?,
     val author: String?,

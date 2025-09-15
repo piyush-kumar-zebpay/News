@@ -1,25 +1,28 @@
 package com.example.news.data.model
 
 import com.example.news.domain.model.Article
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ArticleDto(
-    @SerializedName("source")
+    @Json(name = "source")
     val source: SourceDto,
-    @SerializedName("author")
+    @Json(name = "author")
     val author: String?,
-    @SerializedName("title")
+    @Json(name = "title")
     val title: String,
-    @SerializedName("description")
+    @Json(name = "description")
     val description: String?,
-    @SerializedName("url")
+    @Json(name = "url")
     val url: String,
-    @SerializedName("urlToImage")
+    @Json(name = "urlToImage")
     val imageUrl: String?,
-    @SerializedName("publishedAt")
+    @Json(name = "publishedAt")
     val publishedAt: String,
-    @SerializedName("content")
-    val content: String?
+    @Json(name = "content")
+    val content: String?,
+    val isBookmarked: Boolean = false
 ) {
     fun toDomain(): Article = Article(
         sourceName = source.name,

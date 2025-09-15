@@ -4,6 +4,7 @@ import com.example.news.domain.model.Article
 
 data class NewsUiState(
     val articles: List<Article> = emptyList(),
+    val bookmarkedArticles: Set<String> = emptySet(),
     val isLoading: Boolean = false,
     val isOnline: Boolean = true,
     val error: String? = null
@@ -16,4 +17,5 @@ data class NewsUiState(
 
 sealed class NewsEffect {
     data class NavigateToDetail(val index: Int) : NewsEffect()
+    data class Error(val message: String) : NewsEffect()
 }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -40,6 +41,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -64,6 +66,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation("androidx.compose.foundation:foundation:1.6.2")
     implementation("androidx.navigation:navigation-compose:2.6.0")
@@ -73,6 +76,9 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("com.squareup.moshi:moshi:1.15.2")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
     // Testing Dependencies
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
