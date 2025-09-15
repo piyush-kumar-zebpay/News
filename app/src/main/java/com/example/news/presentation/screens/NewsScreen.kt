@@ -5,11 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,28 +38,45 @@ fun NewsScreen(
                 is NewsEffect.NavigateToDetail -> {
                     navController.navigate("detail/${effect.index}")
                 }
+                is NewsEffect.Error -> TODO()
             }
         }
     }
 
     Scaffold(
-
         snackbarHost = {
-            if (!state.isOnline) {
-                wasOnline = false
-                SnackBar(
-                    message = "No internet connection!",
-                    isAnimation = false
+            Box(modifier = Modifier.fillMaxSize()){
+                if (!state.isOnline) {
+                    wasOnline = false
+                    SnackBar(
+                        message = "No internet connection!",
+                        isAnimation = false
+                    )
+                }
+                else if(!wasOnline) {
+                    SnackBar(
+                        message = "Back online!",
+                        color = Color(0xFF1C6E1F),
+                    )
+                    wasOnline = false
+                }
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("bookmarks")
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(
+                    imageVector = (Icons.Filled.Favorite),
+                    contentDescription = "Bookmark",
                 )
             }
-            else if(!wasOnline) {
-                SnackBar(
-                    message = "Back online!",
-                    color = Color(0xFF1C6E1F),
-                )
-                wasOnline = false
-            }
-        }
+        },
+        floatingActionButtonPosition = FabPosition.End,
     ) { padding ->
         Box(
             modifier = Modifier
@@ -143,7 +164,9 @@ fun NewsScreen(
                                 items = state.articles.drop(5),
                                 key = { _, article -> article.url }
                             ) { index, article ->
-                                NewsCard(article = article, isLoading = state.isLoading) {
+                                NewsCard(
+                                    article = article, isLoading = state.isLoading
+                                ) {
                                     navController.navigate("detail/${index + 5}")
                                 }
                             }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.news.presentation.screens.Bookmarks
 import com.example.news.presentation.viewmodel.NewsViewModel
 import com.example.news.presentation.viewmodel.NewsViewModelFactory
 import com.example.news.presentation.screens.DetailScreen
@@ -46,6 +47,9 @@ class MainActivity : ComponentActivity() {
                         index?.let {
                             DetailScreen(articleIndex = it, stateFlow = viewModel.state)
                         }
+                    }
+                    composable("bookmarks") {
+                            Bookmarks()
                     }
                 }
             }

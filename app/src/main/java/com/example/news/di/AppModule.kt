@@ -2,17 +2,20 @@ package com.example.news.di
 
 import android.content.Context
 import com.example.news.data.local.CachedData
+import com.example.news.data.model.ArticleDto
 import com.example.news.data.remote.NewsApi
 import com.example.news.data.repository.NewsRepositoryImpl
 import com.example.news.domain.repository.NewsRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.data.utils.NetworkStatusTrackerImpl
+import com.squareup.moshi.Moshi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 import java.io.File
 
@@ -28,6 +31,9 @@ object AppModule{
         CachedData()
     }
 
+    private val moshi: Moshi by lazy {
+        Moshi.Builder().build()
+    }
     private val okHttpClient: OkHttpClient by lazy {
         Timber.d("Building OkHttpClient with cache + interceptors")
         OkHttpClient.Builder()
@@ -46,7 +52,7 @@ object AppModule{
         Retrofit.Builder()
             .baseUrl("https://newsapi.org/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 

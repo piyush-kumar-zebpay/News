@@ -14,13 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +40,14 @@ import com.example.news.R
 import com.example.news.domain.model.Article
 import java.util.Locale
 
+
 @Composable
-fun NewsCard(article: Article, isLoading: Boolean, onClick: () -> Unit) {
+fun NewsCard(article: Article,
+             isLoading: Boolean,
+             onClick: () -> Unit, ) {
+
+    val isClicked = remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,19 +86,37 @@ fun NewsCard(article: Article, isLoading: Boolean, onClick: () -> Unit) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(modifier = Modifier.clip(RoundedCornerShape(50))){
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(50))
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    Row {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
 
-                    ) {
-                        if(!isLoading)
-                            Text(
-                                text = article.sourceName.uppercase(Locale.getDefault()),
-                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                        ) {
+                            if(!isLoading)
+                                Text(
+                                    text = article.sourceName.uppercase(Locale.getDefault()),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                        }
+                        Box(modifier = Modifier.weight(1f)){
+                            IconButton(
+                                onClick = { isClicked.value = !isClicked.value;
+                                    article.isBookmarked = isClicked.value },
+                                modifier = Modifier
+                                    .padding(1.dp)
+                                    .size(20.dp)
+                                    .align(Alignment.TopEnd)
+                            ) {
+                                Icon(
+                                    imageVector = if (isClicked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = "Bookmark",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
                 Text(

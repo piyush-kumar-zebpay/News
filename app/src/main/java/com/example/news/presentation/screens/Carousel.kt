@@ -7,13 +7,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +46,7 @@ fun Carousel(
     stateFlow: SharedFlow<NewsUiState>,
     navController: NavController
 ) {
+    val isClicked = remember { mutableStateOf(false) }
     val state by stateFlow.collectAsState(initial = NewsUiState())
     val isLoading = state.isLoading
 
@@ -118,6 +126,23 @@ fun Carousel(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
+                        Box(modifier = Modifier.weight(1f)){
+                            IconButton(
+                                onClick = {
+                                    isClicked.value = !isClicked.value;
+                                },
+                                modifier = Modifier
+                                    .padding(2.dp)
+                                    .size(22.dp)
+                                    .align(Alignment.TopEnd)
+                            ) {
+                                Icon(
+                                    imageVector = if (isClicked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = "Bookmark",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             }
