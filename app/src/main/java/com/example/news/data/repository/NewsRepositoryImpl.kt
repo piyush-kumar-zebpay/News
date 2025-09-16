@@ -10,7 +10,6 @@ class NewsRepositoryImpl(
     private val api: NewsApi,
     private val apiKey: String,
 ) : NewsRepository {
-
     override suspend fun getTopHeadlines(country: String): Result<List<Article>> {
         return try {
             Timber.d("Fetching headlines")

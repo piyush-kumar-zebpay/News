@@ -2,6 +2,8 @@ package com.example.news.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.news.data.model.Bookmarks
+import com.example.news.domain.model.Article
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.presentation.model.NewsEffect
@@ -83,10 +85,20 @@ class NewsViewModel(
     // --- BOOKMARKS ---
     private fun observeBookmarks() {
         viewModelScope.launch {
-            bookmarkRepository.bookmarksFlow.collect { bookmarkedUrls ->
+            bookmarkRepository.bookmarksFlow.collect { bookmarkedArticles ->
                 currentState = currentState.copy(
-                    bookmarkedArticles = bookmarkedUrls.map { url ->
-                        com.example.news.domain.model.BookmarkedArticle(url)
+                    bookmarkedArticles = bookmarkedArticles.map { article ->
+                        com.example.news.domain.model.BookmarkedArticle(
+                            url = article.url,
+                            title = article.title,
+                            author = article.author,
+                            description = article.description,
+                            imageUrl = article.imageUrl,
+                            publishedAt = article.publishedAt,
+                            content = article.content,
+                            sourceName = article.source.name,
+                            sourceId = article.source.id
+                        )
                     }
                 )
                 _state.emit(currentState)
@@ -94,15 +106,16 @@ class NewsViewModel(
         }
     }
 
-    fun addBookmark(url: String) {
+    fun addBookmark(article: Article) {
         viewModelScope.launch {
-            bookmarkRepository.addBookmark(url)
+            bookmarkRepository.addBookmark(article)
         }
     }
 
-    fun removeBookmark(url: String) {
+    fun removeBookmark(articleUrl: String) {
         viewModelScope.launch {
-            bookmarkRepository.removeBookmark(url)
+            bookmarkRepository.removeBookmark(articleUrl)
         }
     }
+
 }

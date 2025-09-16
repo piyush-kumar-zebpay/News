@@ -13,13 +13,15 @@ import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.news.presentation.model.NewsUiState
+import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.flow.SharedFlow
 
 
 @Composable
-fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavController) {
+fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavController, viewmodel: NewsViewModel) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
     if(state.isLoading){
         Column(
@@ -33,6 +35,7 @@ fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavControll
                 articles = emptyList(),
                 stateFlow = stateFlow,
                 navController = navController,
+                viewModel = viewmodel
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn(

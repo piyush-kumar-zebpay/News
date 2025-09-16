@@ -9,6 +9,5 @@ data class Article(
     val url: String,
     val imageUrl: String?,
     val publishedAt: String,
-    val content: String?,
-    var isBookmarked: Boolean = false
+    val content: String?
 )
