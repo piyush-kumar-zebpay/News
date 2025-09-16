@@ -7,30 +7,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.news.R
+//import com.example.news.data.model.bookmarks
 import com.example.news.presentation.model.NewsEffect
 import com.example.news.presentation.model.NewsUiState
+import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun NewsScreen(
+    viewModel: NewsViewModel,
     stateFlow: SharedFlow<NewsUiState>,
     effectFlow: SharedFlow<NewsEffect>,
     navController: NavController,
 ) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
-    var wasOnline by remember { mutableStateOf(true) }
+
 
     LaunchedEffect(Unit) {
         effectFlow.collect { effect ->
@@ -44,28 +45,11 @@ fun NewsScreen(
     }
 
     Scaffold(
-        snackbarHost = {
-            Box(modifier = Modifier.fillMaxSize()){
-                if (!state.isOnline) {
-                    wasOnline = false
-                    SnackBar(
-                        message = "No internet connection!",
-                        isAnimation = false
-                    )
-                }
-                else if(!wasOnline) {
-                    SnackBar(
-                        message = "Back online!",
-                        color = Color(0xFF1C6E1F),
-                    )
-                    wasOnline = false
-                }
-            }
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     navController.navigate("bookmarks")
+
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
@@ -164,8 +148,20 @@ fun NewsScreen(
                                 items = state.articles.drop(5),
                                 key = { _, article -> article.url }
                             ) { index, article ->
+                                val isBookmarked = state.bookmarkedArticles.any { it.url == article.url }
+
                                 NewsCard(
-                                    article = article, isLoading = state.isLoading
+                                    article = article,
+                                    isLoading = state.isLoading,
+                                    isBookmarked = isBookmarked,
+                                    onClick = { navController.navigate("detail/${index + 5}") },
+                                    onToggleBookmark = {
+                                        if (isBookmarked) {
+                                            viewModel.removeBookmark(article.url)
+                                        } else {
+                                            viewModel.addBookmark(article.url)
+                                        }
+                                    }
                                 ) {
                                     navController.navigate("detail/${index + 5}")
                                 }

@@ -24,8 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,17 +40,19 @@ import java.util.Locale
 
 
 @Composable
-fun NewsCard(article: Article,
-             isLoading: Boolean,
-             onClick: () -> Unit, ) {
-
-    val isClicked = remember { mutableStateOf(false) }
-
+fun NewsCard(
+    article: Article,
+    isLoading: Boolean,
+    isBookmarked: Boolean,
+    onClick: () -> Unit,
+    onToggleBookmark: () -> Unit,
+    function: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .then(if (!isLoading) Modifier.clickable { onClick.invoke() } else Modifier),
+            .then(if (!isLoading) Modifier.clickable { onClick() } else Modifier),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
@@ -67,7 +67,6 @@ fun NewsCard(article: Article,
                     .fillMaxHeight()
                     .width(130.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .showOnLoading(isLoading)
             ) {
                 AsyncImage(
                     model = article.imageUrl,
@@ -80,45 +79,41 @@ fun NewsCard(article: Article,
                     error = painterResource(id = R.drawable.error)
                 )
             }
+
             Spacer(modifier = Modifier.width(12.dp))
+
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = Modifier.clip(RoundedCornerShape(50))){
-                    Row {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(50))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = article.sourceName.uppercase(Locale.getDefault()),
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
 
-                        ) {
-                            if(!isLoading)
-                                Text(
-                                    text = article.sourceName.uppercase(Locale.getDefault()),
-                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                        }
-                        Box(modifier = Modifier.weight(1f)){
-                            IconButton(
-                                onClick = { isClicked.value = !isClicked.value;
-                                    article.isBookmarked = isClicked.value },
-                                modifier = Modifier
-                                    .padding(1.dp)
-                                    .size(20.dp)
-                                    .align(Alignment.TopEnd)
-                            ) {
-                                Icon(
-                                    imageVector = if (isClicked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                    contentDescription = "Bookmark",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    IconButton(
+                        onClick = onToggleBookmark,
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isBookmarked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Bookmark",
+                            tint = if (isBookmarked) Color.Red else MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
+
                 Text(
                     text = article.title,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
@@ -126,6 +121,7 @@ fun NewsCard(article: Article,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 6.dp)
                 )
+
                 Text(
                     text = article.description ?: "",
                     style = MaterialTheme.typography.bodyMedium,

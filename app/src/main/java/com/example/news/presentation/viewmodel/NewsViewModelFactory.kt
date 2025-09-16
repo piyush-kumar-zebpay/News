@@ -10,7 +10,8 @@ class NewsViewModelFactory : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             return NewsViewModel(
                 AppModule.getTopHeadlinesUseCase,
-                AppModule.getInternetStatusUseCase
+                AppModule.getInternetStatusUseCase,
+                AppModule.bookmarkRepository
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

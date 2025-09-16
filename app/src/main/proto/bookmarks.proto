@@ -2,19 +2,6 @@ syntax = "proto3";
 
 package com.example.news.data.model;
 
-message Source {
-  string id = 1;
-  string name = 2;
-}
-
-message Article {
-  Source source = 1;
-  string author = 2;
-  string title = 3;
-  string description = 4;
-  string url = 5;
-  string imageUrl = 6;
-  string publishedAt = 7;
-  string content = 8;
-  bool isBookmarked = 9;
+message Bookmarks {
+  repeated string items = 1;
 }
