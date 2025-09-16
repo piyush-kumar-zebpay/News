@@ -1,6 +1,7 @@
 package com.example.news
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -84,13 +85,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            "detail/{index}",
-                            arguments = listOf(navArgument("index") { type = NavType.IntType })
+                            route = "detail/{articleUrl}",
+                            arguments = listOf(navArgument("articleUrl") { type = NavType.StringType })
                         ) { backStackEntry ->
-                            val index = backStackEntry.arguments?.getInt("index")
-                            index?.let {
-                                DetailScreen(articleIndex = it, stateFlow = viewModel.state)
-                            }
+                            val articleUrl = backStackEntry.arguments
+                                ?.getString("articleUrl")
+                                ?.let { Uri.decode(it) } // decode safely
+                            DetailScreen(articleUrl = articleUrl, stateFlow = viewModel.state)
                         }
                         composable("bookmarks") {
                             Bookmarks(

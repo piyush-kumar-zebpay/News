@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.SharedFlow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    articleIndex: Int,
+    articleUrl: String?,
     stateFlow: SharedFlow<NewsUiState>
 ) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
-    val article = state.articles.getOrNull(articleIndex)
+    val article = state.articles.firstOrNull { it.url == articleUrl }
     val context = LocalContext.current
 
     article?.let { article ->

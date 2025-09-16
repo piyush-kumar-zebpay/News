@@ -1,5 +1,6 @@
 package com.example.news.presentation.screens
 
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,12 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +32,7 @@ import coil.compose.AsyncImage
 import com.example.news.R
 import com.example.news.domain.model.Article
 import com.example.news.presentation.model.NewsUiState
+import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -44,9 +41,9 @@ import kotlinx.coroutines.flow.SharedFlow
 fun Carousel(
     articles: List<Article>,
     stateFlow: SharedFlow<NewsUiState>,
-    navController: NavController
+    navController: NavController,
+    viewModel: NewsViewModel // Pass your ViewModel here
 ) {
-    val isClicked = remember { mutableStateOf(false) }
     val state by stateFlow.collectAsState(initial = NewsUiState())
     val isLoading = state.isLoading
 
@@ -77,10 +74,17 @@ fun Carousel(
                 CaraouselShimmer()
             } else {
                 val article = articles[page]
+                val encodedUrl = Uri.encode(article.url)
+
+                // Track bookmark state from ViewModel
+                val isBookmarked = remember(article.url) {
+                    mutableStateOf(state.bookmarkedArticles.any { it.url == article.url })
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { navController.navigate("detail/$page") }
+                        .clickable { navController.navigate("detail/$encodedUrl") }
                 ) {
                     AsyncImage(
                         model = article.imageUrl,
@@ -125,6 +129,31 @@ fun Carousel(
                             color = Color.White,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    // Bookmark Icon
+                    IconButton(
+                        onClick = {
+                            isBookmarked.value = !isBookmarked.value
+                            if (isBookmarked.value) {
+                                viewModel.addBookmark(article)
+                            } else {
+                                viewModel.removeBookmark(article.url)
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(12.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(50)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = if (isBookmarked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Bookmark",
+                            tint = Color.White
                         )
                     }
                 }

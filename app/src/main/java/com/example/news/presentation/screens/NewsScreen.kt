@@ -1,5 +1,6 @@
 package com.example.news.presentation.screens
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.news.R
-//import com.example.news.data.model.bookmarks
 import com.example.news.presentation.model.NewsEffect
 import com.example.news.presentation.model.NewsUiState
 import com.example.news.presentation.viewmodel.NewsViewModel
@@ -70,7 +70,7 @@ fun NewsScreen(
         ) {
             when {
                 state.isLoading && state.articles.isEmpty() -> {
-                    ShimmerScreen(stateFlow, navController)
+                    ShimmerScreen(stateFlow, navController, viewModel)
                 }
 
                 state.error != null && state.articles.isEmpty() -> {
@@ -140,7 +140,8 @@ fun NewsScreen(
                                 Carousel(
                                     articles = state.articles.take(5),
                                     stateFlow,
-                                    navController = navController
+                                    navController = navController,
+                                    viewModel = viewModel
                                 )
                             }
                             item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -149,21 +150,21 @@ fun NewsScreen(
                                 key = { _, article -> article.url }
                             ) { index, article ->
                                 val isBookmarked = state.bookmarkedArticles.any { it.url == article.url }
-
+                                val encodedUrl = Uri.encode(article.url)
                                 NewsCard(
                                     article = article,
                                     isLoading = state.isLoading,
                                     isBookmarked = isBookmarked,
-                                    onClick = { navController.navigate("detail/${index + 5}") },
+                                    onClick = { navController.navigate("detail/${encodedUrl}") },
                                     onToggleBookmark = {
                                         if (isBookmarked) {
                                             viewModel.removeBookmark(article.url)
                                         } else {
-                                            viewModel.addBookmark(article.url)
+                                            viewModel.addBookmark(article)
                                         }
                                     }
                                 ) {
-                                    navController.navigate("detail/${index + 5}")
+                                    navController.navigate("detail/${encodedUrl}")
                                 }
                             }
                         }

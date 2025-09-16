@@ -1,23 +1,24 @@
 package com.example.news.data.local
 
-import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.example.news.data.model.BookmarksOuterClass
+import com.example.news.data.model.Bookmarks
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
-object BookmarksSerializer : Serializer<BookmarksOuterClass.Bookmarks> {
-    override val defaultValue: BookmarksOuterClass.Bookmarks = BookmarksOuterClass.Bookmarks.getDefaultInstance()
+object ArticleListSerializer : Serializer<Bookmarks.ArticleList> {
 
-    override suspend fun readFrom(input: InputStream): BookmarksOuterClass.Bookmarks {
+    override val defaultValue: Bookmarks.ArticleList = Bookmarks.ArticleList.getDefaultInstance()
+
+    override suspend fun readFrom(input: InputStream): Bookmarks.ArticleList {
         try {
-            return BookmarksOuterClass.Bookmarks.parseFrom(input)
+            return Bookmarks.ArticleList.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {
-            throw CorruptionException("Cannot read proto.", exception)
+            throw exception
         }
     }
-    override suspend fun writeTo(t: BookmarksOuterClass.Bookmarks, output: OutputStream) {
+
+    override suspend fun writeTo(t: Bookmarks.ArticleList, output: OutputStream) {
         t.writeTo(output)
     }
 }
