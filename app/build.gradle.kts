@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.protobuf)
     id("org.jetbrains.kotlin.kapt")
 }
 
@@ -38,6 +39,25 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+
+protobuf {
+    protoc {
+        artifact = libs.protobuf.protoc.get().toString()
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                register("java") {
+                    option("lite")
+                }
+                register("kotlin") {
+                    option("lite")
+                }
+            }
+        }
     }
 }
 
@@ -79,6 +99,10 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.15.2")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.kotlin.lite)
+
+
 
     // Testing Dependencies
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.0")

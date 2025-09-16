@@ -9,12 +9,14 @@ import com.example.news.domain.repository.NewsRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.data.utils.NetworkStatusTrackerImpl
+import com.example.news.domain.repository.BookmarksRepository
 import com.squareup.moshi.Moshi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+//import com.example.news.data.local.DatastoreProto
+//import com.example.news.domain.repository.BookmarkRepository
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 import java.io.File
@@ -73,6 +75,10 @@ object AppModule{
     }
     val getInternetStatusUseCase: GetInternetStatusUseCase by lazy {
         GetInternetStatusUseCase(networkStatusTracker)
+    }
+
+   val bookmarkRepository: BookmarksRepository by lazy {
+        BookmarksRepository(appContext)
     }
 
 }

@@ -1,10 +1,11 @@
 package com.example.news.presentation.model
 
 import com.example.news.domain.model.Article
+import com.example.news.domain.model.BookmarkedArticle
 
 data class NewsUiState(
     val articles: List<Article> = emptyList(),
-    val bookmarkedArticles: Set<String> = emptySet(),
+    val bookmarkedArticles: List<BookmarkedArticle> = emptyList(),
     val isLoading: Boolean = false,
     val isOnline: Boolean = true,
     val error: String? = null

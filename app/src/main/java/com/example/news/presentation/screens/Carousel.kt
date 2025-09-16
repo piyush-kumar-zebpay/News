@@ -126,23 +126,6 @@ fun Carousel(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Box(modifier = Modifier.weight(1f)){
-                            IconButton(
-                                onClick = {
-                                    isClicked.value = !isClicked.value;
-                                },
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(22.dp)
-                                    .align(Alignment.TopEnd)
-                            ) {
-                                Icon(
-                                    imageVector = if (isClicked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                    contentDescription = "Bookmark",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
                     }
                 }
             }
