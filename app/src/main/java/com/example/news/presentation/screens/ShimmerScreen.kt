@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -53,57 +54,82 @@ fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavControll
 }
 
 @Composable
-fun NewsCardShimmer(){
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
-        Row(modifier = Modifier
+fun NewsCardShimmer() {
+    Card(
+        modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp)
-            .padding(12.dp)){
-            Box(modifier = Modifier
-                .fillMaxHeight()
-                .width(120.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .shimmerEffect()
-            ){
+            .clip(RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+        Column {
+            // ---------- Top image shimmer ----------
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .shimmerEffect()
+            )
 
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-            Column( modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween) {
-                Box(modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .shimmerEffect()){
-                    Box(modifier = Modifier
-                        .clip(RoundedCornerShape(50))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                        .padding(horizontal = 10.dp, vertical = 1.dp)){
-                        Text(text = "          ")
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Column(modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween) {
-                    Box(modifier = Modifier
-                        .shimmerEffect()){
-                        Box(modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                            .padding(horizontal = 10.dp, vertical = 1.dp)){
-                            Text(text = "                                       ")
-                        }
-                    }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            ) {
+                // ---------- Title shimmer ----------
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(18.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmerEffect()
+                )
 
-                    Box(modifier = Modifier
-                        .shimmerEffect()){
-                        Box(modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                            .padding(horizontal = 10.dp, vertical = 1.dp)){
-                            Text(text = "           ")
-                        }
-                    }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // ---------- Description shimmer ----------
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmerEffect()
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(14.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmerEffect()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // ---------- Bottom row (time + bookmark shimmer) ----------
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect()
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .shimmerEffect()
+                    )
                 }
             }
         }

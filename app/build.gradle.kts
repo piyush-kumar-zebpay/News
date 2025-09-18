@@ -92,7 +92,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.core:core-splashscreen:1.0.0")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
@@ -101,6 +101,12 @@ dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.kotlin.lite)
+    implementation ("androidx.room:room-runtime:2.8.0")
+    kapt ("androidx.room:room-compiler:2.8.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
 
 

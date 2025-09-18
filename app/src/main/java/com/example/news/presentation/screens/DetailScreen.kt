@@ -45,7 +45,7 @@ fun DetailScreen(
                 onClick = { },
                 label = {
                     Text(
-                        text = article.sourceName,
+                        text = article.sourceName!!,
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.Bold
                         )

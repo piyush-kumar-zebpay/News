@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val articleUrl = backStackEntry.arguments
                                 ?.getString("articleUrl")
-                                ?.let { Uri.decode(it) } // decode safely
+                                ?.let { Uri.decode(it) }
                             DetailScreen(articleUrl = articleUrl, stateFlow = viewModel.state)
                         }
                         composable("bookmarks") {

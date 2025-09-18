@@ -4,6 +4,7 @@ import com.example.news.domain.model.Article
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+
 @JsonClass(generateAdapter = true)
 data class ArticleDto(
     @Json(name = "source")
@@ -21,8 +22,7 @@ data class ArticleDto(
     @Json(name = "publishedAt")
     val publishedAt: String,
     @Json(name = "content")
-    val content: String?,
-    val isBookmarked: Boolean = false
+    val content: String?
 ) {
     fun toDomain(): Article = Article(
         sourceName = source.name,

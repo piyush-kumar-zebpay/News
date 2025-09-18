@@ -17,7 +17,6 @@ open class CachedData() {
             val newRequest = request.newBuilder()
                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24)
                 .build()
-
             val response = chain.proceed(newRequest)
             response
         }

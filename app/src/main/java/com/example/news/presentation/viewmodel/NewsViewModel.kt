@@ -2,25 +2,22 @@ package com.example.news.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.news.data.model.Bookmarks
 import com.example.news.domain.model.Article
+import com.example.news.domain.repository.BookmarksRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.presentation.model.NewsEffect
 import com.example.news.presentation.model.NewsUiState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import com.example.news.domain.repository.BookmarksRepository
 
 class NewsViewModel(
     private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase,
     private val internetStatusUseCase: GetInternetStatusUseCase,
     private val bookmarkRepository: BookmarksRepository
 ) : ViewModel() {
-
     private val _state = MutableSharedFlow<NewsUiState>(replay = 1)
     val state: SharedFlow<NewsUiState> = _state.asSharedFlow()
-
     private val _effect = MutableSharedFlow<NewsEffect>()
     val effect: SharedFlow<NewsEffect> = _effect.asSharedFlow()
 
@@ -30,10 +27,8 @@ class NewsViewModel(
         viewModelScope.launch { _state.emit(currentState) }
         loadTopHeadlines()
         networkStatus()
-        observeBookmarks() // ✅ start collecting bookmarks
+        observeBookmarks()
     }
-
-    // --- TOP HEADLINES ---
     private fun loadTopHeadlines() {
         viewModelScope.launch {
             currentState = currentState.copy(isLoading = true)
@@ -86,21 +81,23 @@ class NewsViewModel(
     private fun observeBookmarks() {
         viewModelScope.launch {
             bookmarkRepository.bookmarksFlow.collect { bookmarkedArticles ->
-                currentState = currentState.copy(
-                    bookmarkedArticles = bookmarkedArticles.map { article ->
-                        com.example.news.domain.model.BookmarkedArticle(
-                            url = article.url,
-                            title = article.title,
-                            author = article.author,
-                            description = article.description,
-                            imageUrl = article.imageUrl,
-                            publishedAt = article.publishedAt,
-                            content = article.content,
-                            sourceName = article.source.name,
-                            sourceId = article.source.id
-                        )
-                    }
-                )
+                val currentArticles = currentState.articles
+                val filteredBookmarks = bookmarkedArticles.filter { bookmarked ->
+                    currentArticles.any { it.url == bookmarked.url }
+                }.map { article ->
+                    com.example.news.domain.model.BookmarkedArticle(
+                        url = article.url,
+                        title = article.title,
+                        author = article.author,
+                        description = article.description,
+                        imageUrl = article.imageUrl,
+                        publishedAt = article.publishedAt,
+                        content = article.content,
+                        sourceName = article.source.name,
+                        sourceId = article.source.id
+                    )
+                }
+                currentState = currentState.copy(bookmarkedArticles = filteredBookmarks)
                 _state.emit(currentState)
             }
         }
@@ -116,6 +113,10 @@ class NewsViewModel(
         viewModelScope.launch {
             bookmarkRepository.removeBookmark(articleUrl)
         }
+    }
+
+    fun loadNews(){
+        loadTopHeadlines()
     }
 
 }
