@@ -62,9 +62,8 @@ fun Carousel(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp)
+            .height(200.dp),
+        shape = RoundedCornerShape(0.dp)
     ) {
         HorizontalPager(
             state = pagerState,
@@ -116,7 +115,7 @@ fun Carousel(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = article.sourceName.uppercase(),
+                            text = article.sourceName!!.uppercase(),
                             style = MaterialTheme.typography.labelMedium,
                             color = Color.White.copy(alpha = 0.8f)
                         )
@@ -151,9 +150,12 @@ fun Carousel(
                             )
                     ) {
                         Icon(
-                            imageVector = if (isBookmarked.value) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            painter = painterResource(
+                                id = if (isBookmarked.value) R.drawable.baseline_bookmark_24
+                                else R.drawable.outline_bookmark_border_24
+                            ),
                             contentDescription = "Bookmark",
-                            tint = Color.White
+                            tint = if (isBookmarked.value) Color(0xFFC201C9) else Color.White
                         )
                     }
                 }

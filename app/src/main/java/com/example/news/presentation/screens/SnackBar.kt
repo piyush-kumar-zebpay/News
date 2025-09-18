@@ -45,7 +45,6 @@ fun SnackBar(
                 ),
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-
             ) {
                 SnackBarContent(message = message, color = color)
             }
