@@ -34,7 +34,7 @@ class NewsViewModel(
             currentState = currentState.copy(isLoading = true)
             _state.emit(currentState)
             try {
-                when (val result = getTopHeadlinesUseCase("us")) {
+                when (val result = getTopHeadlinesUseCase()) {
                     is com.example.news.domain.model.Result.Success -> {
                         currentState = currentState.copy(
                             articles = result.data,

@@ -3,8 +3,8 @@ package com.example.news.di
 import android.content.Context
 import com.example.news.data.local.ArticleDao
 import com.example.news.data.local.ArticleDatabase
-import com.example.news.data.local.CachedData
 import com.example.news.data.remote.NewsApi
+import com.example.news.data.remote.VideoNewsApi
 import com.example.news.data.repository.NewsRepositoryImpl
 import com.example.news.domain.repository.NewsRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
@@ -31,9 +31,9 @@ object AppModule{
 
     private const val API_KEY = "373defa50545436bbc2c603ed356fb6d"
 
-    private val cachedData: CachedData by lazy {
-        CachedData()
-    }
+//    private val cachedData: CachedData by lazy {
+//        CachedData()
+//    }
 
     private val moshi: Moshi by lazy {
         Moshi.Builder().build()
@@ -55,13 +55,24 @@ object AppModule{
         Timber.d("Initializing Retrofit")
         Retrofit.Builder()
             .baseUrl("https://newsapi.org/")
-//            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    private val videoRetrofit: Retrofit by lazy {
+        Timber.d("Initializing Retrofit for VideoNewsApi")
+        Retrofit.Builder()
+            .baseUrl("https://videonews.free.beeceptor.com/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
     val api: NewsApi by lazy {
         retrofit.create(NewsApi::class.java)
+    }
+
+    val videoNewsApi: VideoNewsApi by lazy {
+        videoRetrofit.create(VideoNewsApi::class.java)
     }
 
     private val database: ArticleDatabase by lazy{
@@ -72,7 +83,7 @@ object AppModule{
         database.articleDao()
     }
     private val newsRepository: NewsRepository by lazy {
-        NewsRepositoryImpl(api, API_KEY, dao)
+        NewsRepositoryImpl(api, videoNewsApi, API_KEY, dao)
     }
 
     val getTopHeadlinesUseCase: GetTopHeadlinesUseCase by lazy {

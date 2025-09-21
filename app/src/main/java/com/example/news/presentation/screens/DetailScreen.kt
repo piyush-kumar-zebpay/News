@@ -56,18 +56,7 @@ fun DetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             article.imageUrl?.let { imageUrl ->
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = article.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    placeholder = painterResource(id = R.drawable.placeholder),
-                    error = painterResource(id = R.drawable.error)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                ArticleMedia(article)
             }
 
             Text(

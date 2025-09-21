@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.FabPosition
@@ -51,31 +52,34 @@ class MainActivity : ComponentActivity() {
         Timber.i("App started in ${System.currentTimeMillis() - startTime} ms")
         setContent {
             NewsTheme {
+                val navController = rememberNavController() // <-- Move here
                 var wasOnline by remember { mutableStateOf(true) }
                 val state by viewModel.state.collectAsState(initial = NewsUiState())
+
                 Scaffold(
                     snackbarHost = {
-                        Box(modifier = Modifier.fillMaxSize()){
+                        Box(modifier = Modifier.fillMaxSize()) {
                             if (!state.isOnline) {
                                 wasOnline = false
                                 SnackBar(
                                     message = "No internet connection!",
                                     isAnimation = false
                                 )
-                            }
-                            else if(!wasOnline) {
+                            } else if (!wasOnline) {
                                 SnackBar(
                                     message = "Back online!",
                                     color = Color(0xFF1C6E1F),
                                 )
-                                wasOnline = false
+                                wasOnline = true
                             }
                         }
                     }
-                ){
-                    Timber.plant(Timber.DebugTree())
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "news") {
+                ) { padding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "news",
+                        modifier = Modifier.padding(padding)
+                    ) {
                         composable("news") {
                             NewsScreen(
                                 viewModel = viewModel,
@@ -104,5 +108,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 }

@@ -68,16 +68,7 @@ fun NewsCard(
                 )
             }
 
-            AsyncImage(
-                model = article.imageUrl,
-                contentDescription = article.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.error)
-            )
+            ArticleMedia(article)
 
             Column(
                 modifier = Modifier
