@@ -52,7 +52,7 @@ fun Carousel(
     LaunchedEffect(articles.size, isLoading) {
         if (!isLoading && articles.size > 1) {
             while (true) {
-                delay(2000L)
+                delay(30000L)
                 val nextPage = (pagerState.currentPage + 1) % articles.size
                 pagerState.animateScrollToPage(nextPage)
             }
@@ -85,14 +85,7 @@ fun Carousel(
                         .fillMaxSize()
                         .clickable { navController.navigate("detail/$encodedUrl") }
                 ) {
-                    AsyncImage(
-                        model = article.imageUrl,
-                        contentDescription = article.title,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                        placeholder = painterResource(id = R.drawable.placeholder),
-                        error = painterResource(id = R.drawable.error)
-                    )
+                    ArticleMedia(article)
 
                     Box(
                         modifier = Modifier
