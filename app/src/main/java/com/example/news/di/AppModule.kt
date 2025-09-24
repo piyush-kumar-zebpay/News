@@ -1,7 +1,5 @@
 package com.example.news.di
 
-import android.content.Context
-import com.example.news.data.local.ArticleDao
 import com.example.news.data.local.ArticleDatabase
 import com.example.news.data.remote.NewsApi
 import com.example.news.data.remote.VideoNewsApi
@@ -10,95 +8,55 @@ import com.example.news.domain.repository.NewsRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.data.utils.NetworkStatusTrackerImpl
-import com.example.news.domain.repository.BookmarksRepository
-//import com.example.news.domain.repository.BookmarksRepository
-import com.squareup.moshi.Moshi
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-//import com.example.news.data.local.DatastoreProto
-//import com.example.news.domain.repository.BookmarkRepository
-import retrofit2.converter.moshi.MoshiConverterFactory
-import timber.log.Timber
-import java.io.File
+import com.example.news.data.repository.BookmarksRepository
+import com.example.news.domain.repository.NetworkStatusTracker
+import com.example.news.presentation.viewmodel.NewsViewModel
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
-object AppModule{
-    private lateinit var appContext: Context
-    fun init(context: Context) {
-        appContext = context.applicationContext
-    }
-
+object AppModule {
     private const val API_KEY = "373defa50545436bbc2c603ed356fb6d"
 
-//    private val cachedData: CachedData by lazy {
-//        CachedData()
-//    }
+    fun getModules() = module {
+        single {
+            HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = false; isLenient = false })
+                }
+            }
+        }
+        singleOf(::NewsApi)
+        singleOf(::VideoNewsApi)
 
-    private val moshi: Moshi by lazy {
-        Moshi.Builder().build()
-    }
-//    private val okHttpClient: OkHttpClient by lazy {
-//        Timber.d("Building OkHttpClient with cache + interceptors")
-//        OkHttpClient.Builder()
-//            .cache(Cache(File(appContext.cacheDir, "http_cache"), 10L * 1024 * 1024)) // 10 MB
-//            .addInterceptor(cachedData.offlineCacheInterceptor)
-//            .addNetworkInterceptor(cachedData.onlineCacheInterceptor)
-//            .addInterceptor(HttpLoggingInterceptor().apply {
-//                level = HttpLoggingInterceptor.Level.BODY
-//                Timber.d("HttpLoggingInterceptor set to BODY level")
-//            })
-//            .build()
-//    }
 
-    private val retrofit: Retrofit by lazy {
-        Timber.d("Initializing Retrofit")
-        Retrofit.Builder()
-            .baseUrl("https://newsapi.org/")
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-    }
+        single { ArticleDatabase.getDatabase(androidContext()) }
+        single { get<ArticleDatabase>().articleDao() }
 
-    private val videoRetrofit: Retrofit by lazy {
-        Timber.d("Initializing Retrofit for VideoNewsApi")
-        Retrofit.Builder()
-            .baseUrl("https://videonews.free.beeceptor.com/")
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-    }
 
-    val api: NewsApi by lazy {
-        retrofit.create(NewsApi::class.java)
-    }
+        single<NewsRepository> { NewsRepositoryImpl(get(), get(), API_KEY, get()) }
 
-    val videoNewsApi: VideoNewsApi by lazy {
-        videoRetrofit.create(VideoNewsApi::class.java)
-    }
 
-    private val database: ArticleDatabase by lazy{
-        ArticleDatabase.getDatabase(appContext)
-    }
+        singleOf(::GetTopHeadlinesUseCase)
+        singleOf(::GetInternetStatusUseCase)
 
-    private val dao: ArticleDao by lazy {
-        database.articleDao()
-    }
-    private val newsRepository: NewsRepository by lazy {
-        NewsRepositoryImpl(api, videoNewsApi, API_KEY, dao)
-    }
+        singleOf(::NetworkStatusTrackerImpl) { bind<NetworkStatusTracker>() }
 
-    val getTopHeadlinesUseCase: GetTopHeadlinesUseCase by lazy {
-        GetTopHeadlinesUseCase(newsRepository)
-    }
+        single { BookmarksRepository(androidContext()) }
 
-    private val networkStatusTracker: NetworkStatusTrackerImpl by lazy {
-        NetworkStatusTrackerImpl(appContext)
+        viewModel {
+            NewsViewModel(
+                get(),
+                get(),
+                get()
+            )
+        }
     }
-    val getInternetStatusUseCase: GetInternetStatusUseCase by lazy {
-        GetInternetStatusUseCase(networkStatusTracker)
-    }
-
-   val bookmarkRepository: BookmarksRepository by lazy {
-        BookmarksRepository(appContext)
-    }
-
 }

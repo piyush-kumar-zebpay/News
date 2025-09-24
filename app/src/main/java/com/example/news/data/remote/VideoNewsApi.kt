@@ -1,10 +1,13 @@
 package com.example.news.data.remote
 
 import com.example.news.data.model.NewsResponseDto
-import retrofit2.http.GET
-import retrofit2.http.Query
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
 
-interface VideoNewsApi {
-    @GET("api/user")
-    suspend fun getTopHeadlines(): NewsResponseDto
+class VideoNewsApi(private val client: HttpClient){
+    suspend fun getTopHeadlines(): NewsResponseDto{
+        return client.get("https://newsvideo.free.beeceptor.com/api"){
+        }.body()
+    }
 }

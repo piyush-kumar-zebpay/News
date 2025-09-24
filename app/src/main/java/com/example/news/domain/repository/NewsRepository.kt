@@ -1,9 +1,8 @@
 package com.example.news.domain.repository
 
-import com.example.news.data.model.ArticleDto
-import com.example.news.domain.model.Article
+import com.example.news.domain.model.HeadlinesResult
 import com.example.news.domain.model.Result
 
 interface NewsRepository {
-    suspend fun getTopHeadlines(): Result<List<Article>>
+    suspend fun getTopHeadlines(): Result<HeadlinesResult>
 }

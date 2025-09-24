@@ -1,13 +1,8 @@
 package com.example.news.presentation.screens
 
 import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -24,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.news.presentation.model.NewsUiState
 import com.example.news.presentation.viewmodel.NewsViewModel
@@ -38,7 +32,8 @@ fun Bookmarks(
     viewModel: NewsViewModel
 ) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
-    val bookmarkedFullArticles = state.articles.filter { article ->
+    val allArticles = state.newsArticles + state.videoArticles
+    val bookmarkedFullArticles = allArticles.filter { article ->
         state.bookmarkedArticles.any { it.url == article.url }
     }
 

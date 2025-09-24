@@ -1,19 +1,19 @@
 package com.example.news
 
 import android.app.Application
-//import com.example.news.data.local.DatastoreProto
-import timber.log.Timber
 import com.example.news.di.AppModule
-import com.example.news.presentation.viewmodel.NewsViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import timber.log.Timber
 
 class NewsApplication: Application() {
-//    lateinit var datastoreProto: DatastoreProto
-//        private set
-
     override fun onCreate() {
         super.onCreate()
-//        datastoreProto = DatastoreProto(this)
-        AppModule.init(this)
+
+        startKoin {
+            androidContext(this@NewsApplication)
+            modules(AppModule.getModules())
+        }
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
