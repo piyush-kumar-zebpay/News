@@ -3,7 +3,7 @@ package com.example.news.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.news.domain.model.Article
-import com.example.news.domain.repository.BookmarksRepository
+import com.example.news.data.repository.BookmarksRepository
 import com.example.news.domain.usecase.GetInternetStatusUseCase
 import com.example.news.domain.usecase.GetTopHeadlinesUseCase
 import com.example.news.presentation.model.NewsEffect
@@ -16,8 +16,8 @@ class NewsViewModel(
     private val internetStatusUseCase: GetInternetStatusUseCase,
     private val bookmarkRepository: BookmarksRepository
 ) : ViewModel() {
-    private val _state = MutableSharedFlow<NewsUiState>(replay = 1)
-    val state: SharedFlow<NewsUiState> = _state.asSharedFlow()
+    private val _state = MutableStateFlow(NewsUiState())
+    val state: StateFlow<NewsUiState> = _state.asStateFlow()
     private val _effect = MutableSharedFlow<NewsEffect>()
     val effect: SharedFlow<NewsEffect> = _effect.asSharedFlow()
 
@@ -33,17 +33,18 @@ class NewsViewModel(
         viewModelScope.launch {
             currentState = currentState.copy(isLoading = true)
             _state.emit(currentState)
+
             try {
                 when (val result = getTopHeadlinesUseCase()) {
                     is com.example.news.domain.model.Result.Success -> {
                         currentState = currentState.copy(
-                            articles = result.data,
+                            newsArticles = result.data.newsArticles,
+                            videoArticles = result.data.videoArticles,
                             isLoading = false,
                             error = null
                         )
                         _state.emit(currentState)
                     }
-
                     is com.example.news.domain.model.Result.Error -> {
                         currentState = currentState.copy(
                             isLoading = false,
@@ -51,7 +52,6 @@ class NewsViewModel(
                         )
                         _state.emit(currentState)
                     }
-
                     is com.example.news.domain.model.Result.Loading -> {
                         currentState = currentState.copy(isLoading = true)
                         _state.emit(currentState)
@@ -67,7 +67,7 @@ class NewsViewModel(
         }
     }
 
-    // --- NETWORK STATUS ---
+
     private fun networkStatus() {
         viewModelScope.launch {
             internetStatusUseCase().collect { isOnline ->
@@ -77,15 +77,15 @@ class NewsViewModel(
         }
     }
 
-    // --- BOOKMARKS ---
+
     private fun observeBookmarks() {
         viewModelScope.launch {
             bookmarkRepository.bookmarksFlow.collect { bookmarkedArticles ->
-                val currentArticles = currentState.articles
+                val currentArticles = currentState.newsArticles + currentState.videoArticles
                 val filteredBookmarks = bookmarkedArticles.filter { bookmarked ->
                     currentArticles.any { it.url == bookmarked.url }
                 }.map { article ->
-                    com.example.news.domain.model.BookmarkedArticle(
+                    Article(
                         url = article.url,
                         title = article.title,
                         author = article.author,

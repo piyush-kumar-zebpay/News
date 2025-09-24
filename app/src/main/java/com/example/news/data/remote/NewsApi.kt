@@ -1,13 +1,16 @@
 package com.example.news.data.remote
 
 import com.example.news.data.model.NewsResponseDto
-import retrofit2.http.GET
-import retrofit2.http.Query
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 
-interface NewsApi {
-    @GET("v2/top-headlines")
-    suspend fun getTopHeadlines(
-        @Query("country") country: String,
-        @Query("apiKey") apiKey: String
-    ): NewsResponseDto
+class NewsApi(private val client: HttpClient) {
+    suspend fun getTopHeadlines(country: String = "us", apiKey : String): NewsResponseDto {
+        return client.get("https://newsapi.org/v2/top-headlines") {
+            parameter("country", country)
+            parameter("apiKey", apiKey)
+        }.body()
+    }
 }

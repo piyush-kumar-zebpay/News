@@ -3,7 +3,7 @@ package com.example.news.data.repository
 import com.example.news.data.local.ArticleDao
 import com.example.news.data.remote.NewsApi
 import com.example.news.data.remote.VideoNewsApi
-import com.example.news.domain.model.Article
+import com.example.news.domain.model.HeadlinesResult
 import com.example.news.domain.model.Result
 import com.example.news.domain.repository.NewsRepository
 import kotlinx.coroutines.async
@@ -17,48 +17,51 @@ class NewsRepositoryImpl(
     private val apiKey: String,
     private val dao: ArticleDao
 ) : NewsRepository {
-    override suspend fun getTopHeadlines(): Result<List<Article>> {
+    override suspend fun getTopHeadlines(): Result<HeadlinesResult> {
         return try {
             Timber.d("Fetching headlines from NewsApi and VideoNewsApi")
 
-            val articles = coroutineScope {
-                val newsDeferred = async {
+            coroutineScope {
+                val newsArticlesDeferred = async {
                     newsApi.getTopHeadlines(country = "us", apiKey = apiKey)
                         .articles.map { it.toDomain() }
                 }
-                val videoDeferred = async {
+
+                val videoArticlesDeferred = async {
                     videoNewsApi.getTopHeadlines()
                         .articles.map { it.toDomain() }
                 }
 
-                interleave(newsDeferred.await(), videoDeferred.await())
+                val newsArticles = newsArticlesDeferred.await()
+                val videoArticles = videoArticlesDeferred.await()
+
+                dao.insertArticle(newsArticles)
+
+                Timber.i("Fetched news=${newsArticles.size}, videos=${videoArticles.size}")
+
+                Result.Success(
+                    HeadlinesResult(
+                        newsArticles = newsArticles,
+                        videoArticles = videoArticles
+                    )
+                )
             }
-
-            dao.insertArticle(articles)
-            Timber.i("Successfully fetched merged feed: ${articles.size} items")
-
-            Result.Success(articles)
-
         } catch (e: Exception) {
             Timber.e("Error fetching headlines: ${e.message}")
 
             val cached = dao.getAllArticles().firstOrNull()
             if (!cached.isNullOrEmpty()) {
                 Timber.w("Returning cached articles: ${cached.size} items")
-                Result.Success(cached)
+
+                return Result.Success(
+                    HeadlinesResult(
+                        newsArticles = cached,
+                        videoArticles = emptyList()
+                    )
+                )
             } else {
-                Result.Error(e.message ?: "An unknown error occurred")
+                return Result.Error(e.message ?: "An unknown error occurred")
             }
         }
-    }
-    private fun interleave(list1: List<Article>, list2: List<Article>): List<Article> {
-        val merged = mutableListOf<Article>()
-        val maxSize = maxOf(list1.size, list2.size)
-
-        for (i in 0 until maxSize) {
-            if (i < list1.size) merged.add(list1[i])
-            if (i < list2.size) merged.add(list2[i])
-        }
-        return merged
     }
 }

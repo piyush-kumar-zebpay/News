@@ -20,7 +20,6 @@ import com.example.news.presentation.model.NewsUiState
 import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.flow.SharedFlow
 
-
 @Composable
 fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavController, viewmodel: NewsViewModel) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
@@ -57,18 +56,15 @@ fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavControll
 fun NewsCardShimmer() {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column {
-            // ---------- Top image shimmer ----------
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .shimmerEffect()
             )
 
@@ -77,23 +73,19 @@ fun NewsCardShimmer() {
                     .fillMaxWidth()
                     .padding(12.dp)
             ) {
-                // ---------- Title shimmer ----------
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .height(18.dp)
-                        .clip(RoundedCornerShape(4.dp))
                         .shimmerEffect()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // ---------- Description shimmer ----------
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(14.dp)
-                        .clip(RoundedCornerShape(4.dp))
                         .shimmerEffect()
                 )
 
@@ -103,13 +95,11 @@ fun NewsCardShimmer() {
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .height(14.dp)
-                        .clip(RoundedCornerShape(4.dp))
                         .shimmerEffect()
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // ---------- Bottom row (time + bookmark shimmer) ----------
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -118,7 +108,6 @@ fun NewsCardShimmer() {
                         modifier = Modifier
                             .width(50.dp)
                             .height(12.dp)
-                            .clip(RoundedCornerShape(4.dp))
                             .shimmerEffect()
                     )
 
@@ -127,7 +116,6 @@ fun NewsCardShimmer() {
                     Box(
                         modifier = Modifier
                             .size(20.dp)
-                            .clip(RoundedCornerShape(6.dp))
                             .shimmerEffect()
                     )
                 }

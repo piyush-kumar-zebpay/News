@@ -25,16 +25,17 @@ import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 @Composable
 fun NewsScreen(
     viewModel: NewsViewModel,
-    stateFlow: SharedFlow<NewsUiState>,
+    stateFlow: StateFlow<NewsUiState>,
     effectFlow: SharedFlow<NewsEffect>,
     navController: NavController,
 ) {
-    val state by stateFlow.collectAsState(initial = NewsUiState())
+    val state by stateFlow.collectAsState()
 
     LaunchedEffect(Unit) {
         effectFlow.collect { effect ->
@@ -42,7 +43,7 @@ fun NewsScreen(
                 is NewsEffect.NavigateToDetail -> {
                     navController.navigate("detail/${effect.index}")
                 }
-                is NewsEffect.Error -> TODO()
+                is NewsEffect.Error -> {}
             }
         }
     }
@@ -77,11 +78,11 @@ fun NewsScreen(
                 .padding(padding)
         ) {
             when {
-                state.isLoading && state.articles.isEmpty() -> {
+                state.isLoading && state.newsArticles.isEmpty() -> {
                     ShimmerScreen(stateFlow, navController, viewModel)
                 }
 
-                state.error != null && state.articles.isEmpty() -> {
+                state.error != null && state.newsArticles.isEmpty() -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
@@ -95,7 +96,7 @@ fun NewsScreen(
                             textAlign = TextAlign.Center
                         )
                         Button(
-                            onClick = { navController.navigate("news") },
+                            onClick = { viewModel.loadNews()},
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(text = "Retry")
@@ -115,7 +116,39 @@ fun NewsScreen(
                         ) {
                             item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                            if (state.articles.isEmpty()) {
+                            // --- Video Articles Carousel ---
+                            if (state.videoArticles.isNotEmpty()) {
+                                item {
+                                    Carousel(
+                                        articles = state.videoArticles,
+                                        stateFlow = stateFlow,
+                                        navController = navController,
+                                        viewModel = viewModel
+                                    )
+                                }
+                                item { Spacer(modifier = Modifier.height(16.dp)) }
+                            }
+
+                            // --- News Articles List ---
+                            if (state.newsArticles.isNotEmpty()) {
+                                itemsIndexed(
+                                    items = state.newsArticles,
+                                    key = { _, article -> article.url }
+                                ) { _, article ->
+                                    val isBookmarked = state.bookmarkedArticles.any { it.url == article.url }
+                                    val encodedUrl = Uri.encode(article.url)
+                                    NewsCard(
+                                        article = article,
+                                        isLoading = state.isLoading,
+                                        isBookmarked = isBookmarked,
+                                        onClick = { navController.navigate("detail/$encodedUrl") },
+                                        onToggleBookmark = {
+                                            if (isBookmarked) viewModel.removeBookmark(article.url)
+                                            else viewModel.addBookmark(article)
+                                        }
+                                    )
+                                }
+                            } else {
                                 item {
                                     Box(
                                         modifier = Modifier
@@ -140,38 +173,9 @@ fun NewsScreen(
                                         }
                                     }
                                 }
-                            } else {
-                                item {
-                                    Carousel(
-                                        articles = state.articles.take(5),
-                                        stateFlow,
-                                        navController = navController,
-                                        viewModel = viewModel
-                                    )
-                                }
-                                item { Spacer(modifier = Modifier.height(5.dp)) }
-                                itemsIndexed(
-                                    items = state.articles.drop(5),
-                                    key = { _, article -> article.url }
-                                ) { _, article ->
-                                    val isBookmarked = state.bookmarkedArticles.any { it.url == article.url }
-                                    val encodedUrl = Uri.encode(article.url)
-                                    NewsCard(
-                                        article = article,
-                                        isLoading = state.isLoading,
-                                        isBookmarked = isBookmarked,
-                                        onClick = { navController.navigate("detail/${encodedUrl}") },
-                                        onToggleBookmark = {
-                                            if (isBookmarked) {
-                                                viewModel.removeBookmark(article.url)
-                                            } else {
-                                                viewModel.addBookmark(article)
-                                            }
-                                        }
-                                    )
-                                }
                             }
                         }
+
                     }
                     Spacer(modifier = Modifier.height(800.dp))
                 }

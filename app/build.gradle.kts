@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.protobuf)
     id("org.jetbrains.kotlin.kapt")
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 android {
@@ -63,7 +64,6 @@ protobuf {
 
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -84,10 +84,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation("androidx.compose.foundation:foundation:1.6.2")
     implementation("androidx.navigation:navigation-compose:2.6.0")
@@ -95,11 +92,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("com.squareup.moshi:moshi:1.15.2")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.kotlin.lite)
     implementation ("androidx.room:room-runtime:2.8.0")
@@ -110,6 +103,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.media3:media3-exoplayer:1.4.1")
     implementation("androidx.media3:media3-ui:1.4.1")
+    implementation("io.ktor:ktor-client-core:2.3.12")
+    implementation("io.ktor:ktor-client-cio:2.3.12")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+    implementation("io.ktor:ktor-client-logging:2.3.12")
+    implementation("io.insert-koin:koin-android:3.5.0")
 
 
 

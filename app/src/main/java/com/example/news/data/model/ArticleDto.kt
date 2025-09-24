@@ -1,28 +1,35 @@
 package com.example.news.data.model
 
 import com.example.news.domain.model.Article
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ArticleDto(
-    @Json(name = "source")
+    @SerialName("source")
     val source: SourceDto,
-    @Json(name = "author")
-    val author: String?,
-    @Json(name = "title")
+
+    @SerialName("author")
+    val author: String? = null,
+
+    @SerialName("title")
     val title: String,
-    @Json(name = "description")
-    val description: String?,
-    @Json(name = "url")
+
+    @SerialName("description")
+    val description: String? = null,
+
+    @SerialName("url")
     val url: String,
-    @Json(name = "urlToImage")
-    val imageUrl: String?,
-    @Json(name = "publishedAt")
+
+    @SerialName("urlToImage")
+    val imageUrl: String? = null,
+
+    @SerialName("publishedAt")
     val publishedAt: String,
-    @Json(name = "content")
-    val content: String?
+
+    @SerialName("content")
+    val content: String? = null
 ) {
     fun toDomain(): Article = Article(
         sourceName = source.name,

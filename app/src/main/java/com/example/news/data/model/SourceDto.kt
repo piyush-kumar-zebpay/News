@@ -1,12 +1,13 @@
 package com.example.news.data.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class SourceDto(
-    @Json(name = "id")
-    val id: String?,
-    @Json(name = "name")
+    @SerialName("id")
+    val id: String? = null,
+
+    @SerialName("name")
     val name: String
 )
