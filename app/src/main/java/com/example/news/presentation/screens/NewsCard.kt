@@ -64,7 +64,7 @@ fun NewsCard(
                 Text(
                     text = article.sourceName?.uppercase(Locale.getDefault()) ?: "",
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.Black
+                    color =  MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 

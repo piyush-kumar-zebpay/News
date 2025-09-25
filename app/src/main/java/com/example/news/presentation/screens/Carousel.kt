@@ -142,7 +142,6 @@ fun Carousel(
                                 else R.drawable.outline_bookmark_border_24
                             ),
                             contentDescription = "Bookmark",
-                            tint = if (isBookmarked.value) Color(0xFFC201C9) else Color.White
                         )
                     }
                 }
