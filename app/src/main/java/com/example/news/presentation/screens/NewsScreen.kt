@@ -58,13 +58,12 @@ fun NewsScreen(
             ) {
                 FloatingActionButton(
                     onClick = { navController.navigate("bookmarks") },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    contentColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_bookmark_24),
                         contentDescription = "Bookmark",
-                        tint = Color.White
                     )
                 }
             }

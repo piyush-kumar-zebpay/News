@@ -116,8 +116,7 @@ fun NewsCard(
                                 else R.drawable.outline_bookmark_border_24
                             ),
                             contentDescription = "Bookmark",
-                            tint = if (isBookmarked) Color(0xFFC201C9)
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+
                         )
                     }
                     IconButton(
@@ -131,8 +130,6 @@ fun NewsCard(
                                 id = R.drawable.baseline_share_24
                             ),
                             contentDescription = "Share",
-                            tint = Color.DarkGray
-
                         )
                     }
                 }
