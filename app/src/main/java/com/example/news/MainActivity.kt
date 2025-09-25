@@ -1,5 +1,6 @@
 package com.example.news
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModel()
     private val startTime = System.currentTimeMillis()
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("Splash startTime: $startTime")
@@ -63,12 +65,11 @@ class MainActivity : ComponentActivity() {
                                 viewModel.loadNews()
                             }
                         }
-                    }
-                ) { padding ->
+                    },
+                ) {
                     NavHost(
                         navController = navController,
                         startDestination = "news",
-                        modifier = Modifier.padding(padding)
                     ) {
                         composable("news") {
                             NewsScreen(
