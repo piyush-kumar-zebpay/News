@@ -33,16 +33,12 @@ class NewsViewModel(
         viewModelScope.launch {
             currentState = currentState.copy(isLoading = true)
             _state.emit(currentState)
-
-
-
             try {
                 when (val result = getTopHeadlinesUseCase()) {
                     is com.example.news.domain.model.Result.Success -> {
                         val articles = result.data.newsArticles
                         val videoArticles = result.data.videoArticles
 
-                        // Set articles; bookmark flags will be applied by observeBookmarks when bookmarks flow emits
                         currentState = currentState.copy(
                             newsArticles = articles,
                             videoArticles = videoArticles,
@@ -85,7 +81,6 @@ class NewsViewModel(
     private fun observeBookmarks() {
         viewModelScope.launch {
             bookmarkRepository.bookmarksFlow.collect { bookmarkedArticlesProto ->
-                // Map proto bookmarks to domain Article
                 val domainBookmarks = bookmarkedArticlesProto.map { proto ->
                     Article(
                         url = proto.url,
@@ -103,7 +98,7 @@ class NewsViewModel(
 
                 currentState = currentState.copy(
                     bookmarkedArticles = domainBookmarks,
-                    isBookmarkedArticle = domainBookmarks.isNotEmpty()  // Set FAB visibility based on bookmarks existence
+                    isBookmarkedArticle = domainBookmarks.isNotEmpty()
                 )
                 _state.emit(currentState)
             }
