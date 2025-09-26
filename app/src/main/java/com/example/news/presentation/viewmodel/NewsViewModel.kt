@@ -21,9 +21,6 @@ class NewsViewModel(
     private val _effect = MutableSharedFlow<NewsEffect>()
     val effect: SharedFlow<NewsEffect> = _effect.asSharedFlow()
 
-    private val _hasBookmarks = MutableStateFlow(false)
-    val hasBookmarks: StateFlow<Boolean> = _hasBookmarks
-
     private var currentState = NewsUiState()
 
     init {
@@ -45,24 +42,14 @@ class NewsViewModel(
                         val articles = result.data.newsArticles
                         val videoArticles = result.data.videoArticles
 
-                        // Collect bookmarked articles separately
-                        result.data.observeBookmarks.collect { bookmarkedArticles ->
-                            val bookmarkUrls = bookmarkedArticles.map { it.url }.toSet()
-
-                            // Mark articles as bookmarked if their URL exists in bookmarks
-                            val updatedArticles = articles.map { article ->
-                                article.copy(isBookmarked = bookmarkUrls.contains(article.url))
-                            }
-
-                            currentState = currentState.copy(
-                                newsArticles = updatedArticles,
-                                videoArticles = videoArticles,
-                                isLoading = false,
-                                error = null,
-                                bookmarkedArticles = bookmarkedArticles,
-                            )
-                            _state.emit(currentState)
-                        }
+                        // Set articles; bookmark flags will be applied by observeBookmarks when bookmarks flow emits
+                        currentState = currentState.copy(
+                            newsArticles = articles,
+                            videoArticles = videoArticles,
+                            isLoading = false,
+                            error = null
+                        )
+                        _state.emit(currentState)
                     }
                     is com.example.news.domain.model.Result.Error -> {
                         currentState = currentState.copy(
@@ -97,24 +84,27 @@ class NewsViewModel(
 
     private fun observeBookmarks() {
         viewModelScope.launch {
-            bookmarkRepository.bookmarksFlow.collect { bookmarkedArticles ->
-                val currentArticles = currentState.newsArticles + currentState.videoArticles
-                val filteredBookmarks = bookmarkedArticles.filter { bookmarked ->
-                    currentArticles.any { it.url == bookmarked.url }
-                }.map { article ->
+            bookmarkRepository.bookmarksFlow.collect { bookmarkedArticlesProto ->
+                // Map proto bookmarks to domain Article
+                val domainBookmarks = bookmarkedArticlesProto.map { proto ->
                     Article(
-                        url = article.url,
-                        title = article.title,
-                        author = article.author,
-                        description = article.description,
-                        imageUrl = article.imageUrl,
-                        publishedAt = article.publishedAt,
-                        content = article.content,
-                        sourceName = article.source.name,
-                        sourceId = article.source.id
+                        url = proto.url,
+                        title = proto.title,
+                        author = proto.author,
+                        description = proto.description,
+                        imageUrl = proto.imageUrl,
+                        publishedAt = proto.publishedAt,
+                        content = proto.content,
+                        sourceName = proto.source.name,
+                        sourceId = proto.source.id,
+                        isBookmarked = true
                     )
                 }
-                currentState = currentState.copy(bookmarkedArticles = filteredBookmarks)
+
+                currentState = currentState.copy(
+                    bookmarkedArticles = domainBookmarks,
+                    isBookmarkedArticle = domainBookmarks.isNotEmpty()  // Set FAB visibility based on bookmarks existence
+                )
                 _state.emit(currentState)
             }
         }

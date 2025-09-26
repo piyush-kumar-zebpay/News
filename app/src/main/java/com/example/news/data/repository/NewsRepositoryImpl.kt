@@ -42,7 +42,7 @@ class NewsRepositoryImpl(
                 val newsArticles = newsArticlesDeferred.await()
                 val videoArticles = videoArticlesDeferred.await()
 
-//                dao.insertArticle(newsArticles)
+                dao.insertArticle(newsArticles)
 
                 val storedArticles = context.articleListDataStore.data.firstOrNull()?.articlesList ?: emptyList()
                 val isBookmarked = (newsArticles + videoArticles).any { it.url in storedArticles.map { a -> a.url } }

@@ -6,22 +6,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.news.presentation.model.NewsUiState
 import com.example.news.presentation.viewmodel.NewsViewModel
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun ShimmerScreen(stateFlow: SharedFlow<NewsUiState>, navController: NavController, viewmodel: NewsViewModel) {
+fun ShimmerScreen(stateFlow: StateFlow<NewsUiState>, navController: NavController, viewmodel: NewsViewModel) {
     val state by stateFlow.collectAsState(initial = NewsUiState())
     if(state.isLoading){
         Column(

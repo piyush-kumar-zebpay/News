@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.news.domain.model.Article
 
-@Database(entities = [Article::class], version = 1, exportSchema = false)
+@Database(entities = [Article::class], version = 2, exportSchema = false)
 abstract class ArticleDatabase : RoomDatabase() {
     abstract fun articleDao(): ArticleDao
     companion object {
@@ -19,7 +19,9 @@ abstract class ArticleDatabase : RoomDatabase() {
                     context.applicationContext,
                     ArticleDatabase::class.java,
                     "article_database"
-                ).build()
+                )
+                .fallbackToDestructiveMigration() // Add fallback migration
+                .build()
                 INSTANCE = instance
                 instance
             }

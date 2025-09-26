@@ -28,17 +28,17 @@ import com.example.news.domain.model.Article
 import com.example.news.presentation.model.NewsUiState
 import com.example.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(
     articles: List<Article>,
-    stateFlow: SharedFlow<NewsUiState>,
+    stateFlow: StateFlow<NewsUiState>,
     navController: NavController,
     viewModel: NewsViewModel // Pass your ViewModel here
 ) {
-    val state by stateFlow.collectAsState(initial = NewsUiState())
+    val state by stateFlow.collectAsState()
     val isLoading = state.isLoading
 
     val pagerState = rememberPagerState(pageCount = { if (isLoading) 3 else articles.size })
@@ -69,10 +69,8 @@ fun Carousel(
                 val article = articles[page]
                 val encodedUrl = Uri.encode(article.url)
 
-                // Track bookmark state from ViewModel
-                val isBookmarked = remember(article.url) {
-                    mutableStateOf(state.bookmarkedArticles.any { it.url == article.url })
-                }
+                // Derive bookmark state from ViewModel state so it's always up-to-date
+                val isBookmarked = state.bookmarkedArticles.any { it.url == article.url }
 
                 Box(
                     modifier = Modifier
@@ -121,8 +119,7 @@ fun Carousel(
                     // Bookmark Icon
                     IconButton(
                         onClick = {
-                            isBookmarked.value = !isBookmarked.value
-                            if (isBookmarked.value) {
+                            if (!isBookmarked) {
                                 viewModel.addBookmark(article)
                             } else {
                                 viewModel.removeBookmark(article.url)
@@ -138,7 +135,7 @@ fun Carousel(
                     ) {
                         Icon(
                             painter = painterResource(
-                                id = if (isBookmarked.value) R.drawable.baseline_bookmark_24
+                                id = if (isBookmarked) R.drawable.baseline_bookmark_24
                                 else R.drawable.outline_bookmark_border_24
                             ),
                             contentDescription = "Bookmark",
