@@ -41,7 +41,9 @@ object AppModule {
         single { get<ArticleDatabase>().articleDao() }
 
 
-        single<NewsRepository> { NewsRepositoryImpl(get(), get(), API_KEY, get()) }
+        single<NewsRepository> { NewsRepositoryImpl(
+            get(), get(), API_KEY, get(), context = androidContext()
+        ) }
 
 
         singleOf(::GetTopHeadlinesUseCase)

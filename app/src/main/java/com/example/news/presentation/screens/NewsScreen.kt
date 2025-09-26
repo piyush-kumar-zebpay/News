@@ -50,9 +50,9 @@ fun NewsScreen(
 
     Scaffold(
         floatingActionButton = {
-            Timber.d("${state.bookmarkedArticles.size}")
+            Timber.d("${state.isBookmarkedArticle}")
             AnimatedVisibility(
-                visible = state.bookmarkedArticles.isNotEmpty(),
+                visible = state.isBookmarkedArticle,
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {

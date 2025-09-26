@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.news.data.model.Bookmarks
 
 @Entity(tableName = "articles",  indices = [Index(value = ["url"], unique = true)])
 data class Article(
@@ -17,7 +18,8 @@ data class Article(
     val url: String,
     val imageUrl: String?,
     val publishedAt: String,
-    val content: String?
+    val content: String?,
+    val isBookmarked: Boolean = false
 )
 
 

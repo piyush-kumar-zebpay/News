@@ -7,6 +7,7 @@ data class NewsUiState(
     val videoArticles: List<Article> = emptyList(),
     val bookmarkedArticles: List<Article> = emptyList(),
     val isLoading: Boolean = false,
+    val isBookmarkedArticle: Boolean = false,
     val isOnline: Boolean = true,
     val error: String? = null
 )

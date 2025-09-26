@@ -21,6 +21,9 @@ class NewsViewModel(
     private val _effect = MutableSharedFlow<NewsEffect>()
     val effect: SharedFlow<NewsEffect> = _effect.asSharedFlow()
 
+    private val _hasBookmarks = MutableStateFlow(false)
+    val hasBookmarks: StateFlow<Boolean> = _hasBookmarks
+
     private var currentState = NewsUiState()
 
     init {
@@ -34,16 +37,32 @@ class NewsViewModel(
             currentState = currentState.copy(isLoading = true)
             _state.emit(currentState)
 
+
+
             try {
                 when (val result = getTopHeadlinesUseCase()) {
                     is com.example.news.domain.model.Result.Success -> {
-                        currentState = currentState.copy(
-                            newsArticles = result.data.newsArticles,
-                            videoArticles = result.data.videoArticles,
-                            isLoading = false,
-                            error = null
-                        )
-                        _state.emit(currentState)
+                        val articles = result.data.newsArticles
+                        val videoArticles = result.data.videoArticles
+
+                        // Collect bookmarked articles separately
+                        result.data.observeBookmarks.collect { bookmarkedArticles ->
+                            val bookmarkUrls = bookmarkedArticles.map { it.url }.toSet()
+
+                            // Mark articles as bookmarked if their URL exists in bookmarks
+                            val updatedArticles = articles.map { article ->
+                                article.copy(isBookmarked = bookmarkUrls.contains(article.url))
+                            }
+
+                            currentState = currentState.copy(
+                                newsArticles = updatedArticles,
+                                videoArticles = videoArticles,
+                                isLoading = false,
+                                error = null,
+                                bookmarkedArticles = bookmarkedArticles,
+                            )
+                            _state.emit(currentState)
+                        }
                     }
                     is com.example.news.domain.model.Result.Error -> {
                         currentState = currentState.copy(
@@ -67,7 +86,6 @@ class NewsViewModel(
         }
     }
 
-
     private fun networkStatus() {
         viewModelScope.launch {
             internetStatusUseCase().collect { isOnline ->
@@ -76,7 +94,6 @@ class NewsViewModel(
             }
         }
     }
-
 
     private fun observeBookmarks() {
         viewModelScope.launch {
