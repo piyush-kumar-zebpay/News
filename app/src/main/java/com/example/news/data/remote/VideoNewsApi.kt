@@ -7,7 +7,7 @@ import io.ktor.client.request.get
 
 class VideoNewsApi(private val client: HttpClient){
     suspend fun getTopHeadlines(): NewsResponseDto{
-        return client.get("https://videonews.free.beeceptor.com/api/user"){
+        return client.get("https://newsv.free.beeceptor.com/todos"){
         }.body()
     }
 }

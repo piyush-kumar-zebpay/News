@@ -67,8 +67,6 @@ class NewsRepositoryImpl(
                         bookmarks.articlesList.map { it.toDomainArticle() }
                     }
 
-
-
                 Timber.i("Fetched news=${newsArticles.size}, videos=${videoArticles.size}")
 
                 Result.Success(
